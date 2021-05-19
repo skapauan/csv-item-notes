@@ -2,7 +2,6 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { StatusBar } from 'expo-status-bar'
 import { ViewScreen } from './ViewScreen'
 import { SaveScreen } from './SaveScreen'
 import { OpenScreen } from './OpenScreen'
@@ -19,7 +18,6 @@ export default function Main() {
                 <Drawer.Screen name="Open different file" component={OpenScreen} />
                 <Drawer.Screen name="Settings" component={SettingsScreen} />
             </Drawer.Navigator>
-            <StatusBar style="auto" />
         </NavigationContainer>
     )
 }
