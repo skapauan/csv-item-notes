@@ -1,29 +1,33 @@
 import * as SQLite from 'expo-sqlite'
 import { SQLResultSet, SQLTransaction } from 'expo-sqlite'
+import { DBErrors } from './errors'
+import { DBQueries } from './queries'
+import { DBConstants, DBValue, ColumnType, ColumnTypes, ItemColsRow } from './constants'
+import { getDataColName, getNoteColName } from './names'
 
-export const DBConstants = {
-    DatabaseName: 'csv_item_notes',
-    ItemsTableName: 'items',
-    ItemIdColName: 'item_id',
-    ItemNoteColName: 'note',
-    ItemColNamePrefix: 'col_',
-    ColumnsTableName: 'columns',
-    ColumnIdColName: 'column_id',
-    ColumnTitleColName: 'title',
+export type DBQuery = string | { text: string, values: DBValue[] }
+export type ItemDataInput = { rows: string[][], hasHeaderRow?: boolean }
+export type ItemColumn = {
+    name: string;
+    type: ColumnType;
+    title?: string;
+    isNote?: boolean;
 }
-
-export const getItemColName = (index: number) => `${DBConstants.ItemColNamePrefix}${index}`
+export type NotesInput = { colName: string, value: DBValue }[]
 
 export class DB {
-    db: SQLite.Database | undefined
-    columnNames: string[] | undefined
+    db: SQLite.Database
+    initStatus: boolean
+    itemColumns: ItemColumn[]
 
-    constructor(columnNames?: string[]) {
-        this.columnNames = columnNames
+    constructor() {
+        this.db = SQLite.openDatabase(DBConstants.Database)
+        this.initStatus = false
+        this.itemColumns = []
     }
 
-    query(query: string | {text: string, values: any[]}, transaction?: SQLTransaction)
-            : Promise<SQLResultSet> {
+    query(query: DBQuery, transaction?: SQLTransaction)
+    : Promise<SQLResultSet> {
         // Prepare parameters
         let statement: string
         let args: any[] | undefined
@@ -54,8 +58,7 @@ export class DB {
         }
         // Use a new transaction
         return new Promise((resolve, reject) => {
-            const db = this.db || SQLite.openDatabase(DBConstants.DatabaseName)
-            db.transaction(
+            this.db.transaction(
                 // transaction callback
                 (tx) => {
                     tx.executeSql(statement, args,
@@ -80,130 +83,177 @@ export class DB {
         })
     }
 
+    queryParallel(queries: DBQuery[], transaction?: SQLTransaction)
+    : Promise<SQLResultSet[]> {
+        const promises: Promise<SQLResultSet>[] = []
+        queries.forEach((query) => {
+            promises.push(this.query(query, transaction))
+        })
+        return Promise.all(promises)
+        .then(results => results)
+        .catch(error => Promise.reject(error))
+    }
+
     isInit(): boolean {
-        return !!this.db
+        return this.initStatus
     }
 
-    init(): Promise<void> {
-        if (this.db) {
-            return Promise.resolve()
-        }
-        return new Promise<void>((resolve, reject) => {
-            const db = SQLite.openDatabase(DBConstants.DatabaseName)
-            db.transaction(
-                (tx) => {
-                    let createColumnsTableQuery = `CREATE TABLE IF NOT EXISTS
-                        ${DBConstants.ColumnsTableName} (
-                        ${DBConstants.ColumnIdColName} INTERGER PRIMARY KEY NOT NULL,
-                        ${DBConstants.ColumnTitleColName} TEXT
-                        );`
-                    let readColumnsTableQuery = `SELECT * FROM ${DBConstants.ColumnsTableName};`
-
-                    return this.query(createColumnsTableQuery, tx)
-                    .then(() => this.query(readColumnsTableQuery, tx))
-                    .then((result) => {
-                        if (result.rows.length > 0) {
-                            // populate columnNames from columns table
-                            this.columnNames = []
-                            let row
-                            for (let i = 0; !!(row = result.rows.item(i)); i++) {
-                                this.columnNames[row.column_id] = row.title
-                            }
-                            return Promise.resolve()
-                        } else {
-                            // populate columns table from columnNames
-                            const promises: Promise<SQLResultSet>[] = []
-                            const text = `INSERT INTO ${DBConstants.ColumnsTableName} (
-                                ${DBConstants.ColumnIdColName},
-                                ${DBConstants.ColumnTitleColName}) VALUES (?, ?);`
-                            this.columnNames?.forEach((title, index) => {
-                                let values = [index, title]
-                                promises.push(this.query({text, values}, tx))
-                            })
-                            return Promise.all(promises).then(() => {})
-                        }
-                    })
-                    .then(() => {
-                        // create items table with correct column count
-                        const itemCols = [
-                            `${DBConstants.ItemIdColName} INTERGER PRIMARY KEY NOT NULL`,
-                            `${DBConstants.ItemNoteColName} TEXT`
-                        ]
-                        this.columnNames?.forEach((value, index) => {
-                            itemCols.push(`${getItemColName(index)} TEXT`)
-                        })
-                        let createItemsTableQuery = `CREATE TABLE IF NOT EXISTS
-                            ${DBConstants.ItemsTableName} (${itemCols.join(',')});`
-                        return this.query(createItemsTableQuery, tx)
-                    })
-                    .then(() => {
-                        this.db = db
-                        resolve()
-                    })
-                    .catch((error) => reject(error))
-                },
-                (error) => {
-                    reject(error)
-                }
-            )
-        })
-    }
-
-    end(): void {
-        this.db = undefined
-    }
-
-    clearAll(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const db = this.db || SQLite.openDatabase(DBConstants.DatabaseName)
-            this.db = undefined
-            db.transaction(
-                (tx) => {
-                    const dropItemsTable = this.query(
-                        `DROP TABLE IF EXISTS ${DBConstants.ItemsTableName};`
-                        , tx)
-                    const dropColumnsTable = this.query(
-                        `DROP TABLE IF EXISTS ${DBConstants.ColumnsTableName};`
-                        , tx)
-                    Promise.all([dropItemsTable, dropColumnsTable])
-                    .then(() => resolve())
-                    .catch((error) => reject(error))
-                },
-                (error) => reject(error)
-            )
-        })
-    }
-
-    createItem(item: (string|null)[], transaction?: SQLTransaction): Promise<void> {
-        if (item.length < 1 || item.length !== this.columnNames?.length) {
-            return Promise.reject(new Error('Number of columns must match original CSV, '
-                + (this.columnNames?.length || 'unknown') + '.'))
-        }
-        let cl: string[] = []
-        let ph: string[] = []
-        item.forEach((value, index) => {
-            cl.push(getItemColName(index))
-            ph.push('?')
-        })
-        const columns = cl.join(',')
-        const placeholders = ph.join(',')
-        return this.query({
-            values: item,
-            text: `INSERT INTO ${DBConstants.ItemsTableName} (${columns}) VALUES (${placeholders});`
-        }, transaction).then(() => {})
-    }
-
-    updateItemNote(note: string, firstColValue: string, transaction?: SQLTransaction): Promise<boolean> {
-        return this.query({
-            values: [note, firstColValue],
-            text: `UPDATE ${DBConstants.ItemsTableName} SET ${DBConstants.ItemNoteColName} = ?
-                WHERE ${getItemColName(0)} = ?;`
-        }, transaction).then((result) => {
-            if (result.rowsAffected > 0) {
-                return true
+    async init(transaction?: SQLTransaction): Promise<void> {
+        if (this.initStatus) return
+        try {
+            // Cannot proceed without an Items table with at least one row
+            if (!(await this.hasTable(DBConstants.Items.Table, transaction))) {
+                return Promise.reject(new Error(DBErrors.NO_ITEM_TABLE))
             }
-            return false
+            if (await this.isTableEmpty(DBConstants.Items.Table, transaction)) {
+                return Promise.reject(new Error(DBErrors.NO_ITEM_ROWS))
+            }
+            // Populate DB.itemColumns from Items table_info and ItemCols rows
+            this.itemColumns = []
+            const info = await this.query(DBQueries.SelectItemsTableInfo, transaction)
+            for (let i = 0, row; !!(row = info.rows.item(i)); i++) {
+                this.itemColumns.push({ name: row.name, type: row.type })
+            }
+            if (await this.hasTable(DBConstants.ItemCols.Table, transaction)) {
+                const result = await this.query(DBQueries.SelectAllItemCols, transaction)
+                for (let i = 0, row: ItemColsRow; !!(row = result.rows.item(i)); i++) {
+                    const ic = this.itemColumns.find((col) => col.name === row.name)
+                    if (ic) {
+                        ic.title = row.title || ic.name
+                        ic.isNote = row.is_note !== 0
+                    }
+                }
+            }
+            this.initStatus = true
+        } catch (e) {
+            return Promise.reject(e)
+        }
+    }
+
+    setItemsFromData(itemData: ItemDataInput, transaction?: SQLTransaction): Promise<void> {
+        // Check input validity
+        if (!itemData || !itemData.rows
+            || typeof itemData.rows.length !== 'number'
+            || itemData.rows.length < 1
+            || itemData.rows[0].length < 1)
+        {
+            return Promise.reject(new Error(DBErrors.INVALID_DATA_FORMAT))
+        }
+        const { hasHeaderRow, rows } = itemData
+        const firstRow = rows[0]
+        const numCols = firstRow.length
+        const numRows = rows.length
+        for (let i = 0; i < numRows; i++) {
+            if (rows[i].length !== numCols) {
+                return Promise.reject(new Error(DBErrors.INVALID_FIELD_VARIANCE))
+            }
+        }
+        // Populate DB.itemColumns; Construct queries to populate ItemCols table
+        this.itemColumns = []
+        const queries: DBQuery[] = [ DBQueries.CreateItemCols ]
+        for (let i = 0; i < numCols; i++) {
+            let name = getDataColName(i), title = name,
+                isNote = false, type: ColumnType = ColumnTypes.Text
+            if (hasHeaderRow) {
+                title = firstRow[i]
+                if (title.startsWith(DBConstants.CsvNotePrefix)) {
+                    isNote = true
+                    name = getNoteColName(i)
+                    title = title.slice(DBConstants.CsvNotePrefix.length)
+                    const suffixIndex = title.indexOf(DBConstants.CsvNoteTypeSuffix)
+                    if (suffixIndex > -1) {
+                        const typeString = title.slice(0, suffixIndex)
+                        title = title.slice(suffixIndex + DBConstants.CsvNoteTypeSuffix.length)
+                        switch (typeString) {
+                            case ColumnTypes.Boolean:
+                            case ColumnTypes.Numeric:
+                                type = typeString
+                                break
+                            default:
+                                type = ColumnTypes.Text
+                        }
+                    }
+                }
+            }
+            this.itemColumns.push({ name, type, title, isNote })
+            queries.push({
+                text: DBQueries.InsertItemCol,
+                values: [name, title, isNote],
+            })
+        }
+        // Construct queries to create and populate Items table
+        const colDecs: string[] = []
+        const colNames: string[] = []
+        this.itemColumns.forEach((col) => {
+            colDecs.push(`${col.name} ${col.type}`)
+            colNames.push(col.name)
         })
+        queries.push(DBQueries.getCreateItems(colDecs))
+        const insertItem = DBQueries.getInsertItem(colNames)
+        for (let i = 0; i < numRows; i++) {
+            const row = rows[i], values: DBValue[] = []
+            for (let j = 0; j < numCols; j++) {
+                let value: DBValue = row[j]
+                const col = this.itemColumns[j]
+                if (col.isNote) {
+                    if (col.type === ColumnTypes.Boolean) {
+                        value = (value === '1') ? 1 : null
+                    } else {
+                        value = (value.length > 0) ? value : null
+                    }
+                }
+                values.push(value)
+            }
+            queries.push({ text: insertItem, values })
+        }
+        // Execute queries
+        return this.queryParallel(queries).then(() => {})
+    }
+
+    findItemsByColumnValue(columnName: string, columnValue: DBValue, limitOne?: boolean
+    , transaction?: SQLTransaction): Promise<SQLResultSet> {
+        return this.query({
+            text: DBQueries.getSelectItemsWithColumnValue(columnName, limitOne),
+            values: [columnValue],
+        }, transaction)
+    }
+
+    updateItemNotes(itemId: number, notes: NotesInput, transaction?: SQLTransaction)
+    : Promise<void> {
+        const colNames: string[] = []
+        const values: DBValue[] = []
+        notes.forEach((note) => {
+            colNames.push(note.colName)
+            values.push(note.value)
+        })
+        values.push(itemId)
+        return this.query({
+            text: DBQueries.getUpdateItemNotes(colNames),
+            values,
+        }).then(() => {})
+    }
+
+    hasTable(name: string, transaction?: SQLTransaction): Promise<boolean> {
+        return this.query(DBQueries.getSelectTableWithName(name), transaction)
+        .then(({ rows }) => {
+            return rows.length > 0
+        })
+    }
+
+    isTableEmpty(name: string, transaction?: SQLTransaction): Promise<boolean> {
+        return this.query(DBQueries.getSelectTableIsEmpty(name), transaction)
+        .then(({ rows }) => {
+            return rows.item(0).isempty === 1
+        })
+    }
+
+    clearAll(transaction?: SQLTransaction): Promise<void> {
+        this.initStatus = false
+        return this.queryParallel([
+            DBQueries.DropItems,
+            DBQueries.DropItemCols,
+        ], transaction)
+        .then(() => {})
     }
 
 }
