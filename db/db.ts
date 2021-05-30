@@ -132,17 +132,17 @@ export class DB {
 
     setItemsFromData(itemData: ItemDataInput, transaction?: SQLTransaction): Promise<void> {
         // Check input validity
-        if (!itemData || !itemData.rows
-            || typeof itemData.rows.length !== 'number'
-            || itemData.rows.length < 1
-            || itemData.rows[0].length < 1)
-        {
-            return Promise.reject(new Error(DBErrors.INVALID_DATA_FORMAT))
-        }
-        const { hasHeaderRow, rows } = itemData
+        const { rows } = itemData
+        const hasHeaderRow = itemData.hasHeaderRow !== false
         const firstRow = rows[0]
         const numCols = firstRow.length
         const numRows = rows.length
+        if ( hasHeaderRow ? numRows < 2 : numRows < 1 ) {
+            return Promise.reject(new Error(DBErrors.INVALID_NUMBER_ROWS))
+        }
+        if ( numCols < 1 ) {
+            return Promise.reject(new Error(DBErrors.INVALID_NUMBER_COLUMNS))
+        }
         for (let i = 0; i < numRows; i++) {
             if (rows[i].length !== numCols) {
                 return Promise.reject(new Error(DBErrors.INVALID_FIELD_VARIANCE))
@@ -207,7 +207,7 @@ export class DB {
             queries.push({ text: insertItem, values })
         }
         // Execute queries
-        return this.queryParallel(queries).then(() => {})
+        return this.queryParallel(queries, transaction).then(() => {})
     }
 
     findItemsByColumnValue(columnName: string, columnValue: DBValue, limitOne?: boolean
@@ -249,6 +249,7 @@ export class DB {
 
     clearAll(transaction?: SQLTransaction): Promise<void> {
         this.initStatus = false
+        this.itemColumns = []
         return this.queryParallel([
             DBQueries.DropItems,
             DBQueries.DropItemCols,
