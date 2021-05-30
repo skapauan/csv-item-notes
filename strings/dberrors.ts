@@ -1,7 +1,5 @@
-import { getStrings } from './strings'
+import { Strings } from './strings'
 import { DBErrors } from '../db/errors'
-
-const Strings = getStrings()
 
 export function getItemDataErrorMessage(error: Error): string {
     switch(error.message) {
