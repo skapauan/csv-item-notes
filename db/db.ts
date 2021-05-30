@@ -150,7 +150,11 @@ export class DB {
         }
         // Populate DB.itemColumns; Construct queries to populate ItemCols table
         this.itemColumns = []
-        const queries: DBQuery[] = [ DBQueries.CreateItemCols ]
+        const queries: DBQuery[] = [
+            DBQueries.DropItems,
+            DBQueries.DropItemCols,
+            DBQueries.CreateItemCols,
+        ]
         for (let i = 0; i < numCols; i++) {
             let name = getDataColName(i), title = name,
                 isNote = false, type: ColumnType = ColumnTypes.Text
