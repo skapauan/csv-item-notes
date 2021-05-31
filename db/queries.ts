@@ -59,10 +59,10 @@ export const DBQueries = {
         ${DBConstants.ItemCols.IsNote}) VALUES (?, ?, ?);`,
 
     SelectAllItemCols:
-        `SELECT (${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
-        ${DBConstants.ItemCols.IsNote}) FROM "${DBConstants.ItemCols.Table}";`,
+        `SELECT ${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
+        ${DBConstants.ItemCols.IsNote} FROM "${DBConstants.ItemCols.Table}";`,
     
     SelectItemsTableInfo:
-        `SELECT (name, type) FROM PRAGMA_TABLE_INFO("${DBConstants.Items.Table}");`,
+        `SELECT name, type FROM PRAGMA_TABLE_INFO("${DBConstants.Items.Table}");`,
         
 }
