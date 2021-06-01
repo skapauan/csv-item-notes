@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { Text, View } from 'react-native'
 import { styles } from './styles'
 
 interface TextProps {
@@ -21,5 +21,14 @@ export function DT(props: TextProps) {
 export function DD(props: TextProps) {
     return (
         <Text style={styles.dd}>{props.children}</Text>
+    )
+}
+
+export function LI(props: TextProps) {
+    return (
+        <View style={styles.li_outer}>
+            <Text style={styles.li_bullet}>{'\u2022'}</Text>
+            <Text style={styles.li_inner}>{props.children}</Text>
+        </View>
     )
 }

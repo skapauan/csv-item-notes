@@ -1,23 +1,38 @@
-
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { ViewScreen } from './ViewScreen'
-import { SaveScreen } from './SaveScreen'
-import { OpenScreen } from './OpenScreen'
-import { SettingsScreen } from './SettingsScreen'
+import { Intro } from './Intro'
+import { Loading } from './Loading'
+import { MainNavigation } from './MainNavigation'
+import { Context } from './Context'
+import { dbi } from '../db/dbInstance'
 
 const Drawer = createDrawerNavigator()
 
-export default function Main() {
+export function Main() {
+    const [dataStatus, setDataStatus] = React.useState(-1)
+    React.useEffect(() => {
+        // When app starts, check if DB has data
+        dbi.init()
+        .then(() => setDataStatus(1))
+        .catch((e) => setDataStatus(0))
+    }, [])
+
+    let content
+    switch (dataStatus) {
+        case -1:
+            content = <Loading />
+            break
+        case 0:
+            content = <Intro />
+            break
+        case 1:
+            content = <MainNavigation />
+            break
+    }
+
     return (
-        <NavigationContainer>
-            <Drawer.Navigator initialRouteName="View current">
-                <Drawer.Screen name="View current" component={ViewScreen} />
-                <Drawer.Screen name="Save notes" component={SaveScreen} />
-                <Drawer.Screen name="Open different file" component={OpenScreen} />
-                <Drawer.Screen name="Settings" component={SettingsScreen} />
-            </Drawer.Navigator>
-        </NavigationContainer>
+        <Context.Provider value={{ dataStatus, setDataStatus }}>
+            {content}
+        </Context.Provider>
     )
 }
