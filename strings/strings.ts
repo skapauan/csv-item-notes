@@ -15,7 +15,6 @@ export const Strings = new LocalizedStrings({
             'The first column must contain unique ID numbers for each item.',
         FileRequirement3:
             'There must be at least one row of data.',
-        DoneLoadingFile: 'Done loading data from file',
         ErrorInvalidNumberRows:
             'Invalid CSV: At least one row of data is required, not including'
             + ' the header row',
@@ -26,10 +25,12 @@ export const Strings = new LocalizedStrings({
         ErrorUnknown: 'Unknown Error',
         IntroInstructions: 'To begin, choose a CSV file from your device.',
         ItemIdPlaceholder: 'Enter item ID here',
-        Loading: 'Loading',
-        ScreenNameView: 'View current data',
-        ScreenNameSave: 'Save as file',
-        ScreenNameOpen: 'Open different file',
+        LoadFileDone: 'Done loading data from file',
+        LoadFileError: 'Error loading file',
+        Loading: 'Loading...',
+        ScreenNameView: 'View Current Data',
+        ScreenNameSave: 'Save As File',
+        ScreenNameOpen: 'Open File',
         ScreenNameSettings: 'Settings',
     }
 })

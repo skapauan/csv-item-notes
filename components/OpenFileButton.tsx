@@ -1,37 +1,24 @@
 import React from 'react'
-import { Alert, View } from 'react-native'
+import { Alert } from 'react-native'
 import { Button } from 'react-native-elements'
-import Papa from 'papaparse'
-import { dbi } from '../db/dbInstance'
-import { pickFileGetString } from '../fs/fs'
 import { Strings } from '../strings/strings'
-import { getItemDataErrorMessage } from '../strings/dberrors'
-import { Context } from './Context'
+import { StoreContext } from './shared/store'
+import { openFile } from './shared/async'
 
-export function OpenFileButton() {
-    return (
-        <Context.Consumer>
-        {({ dataStatus, setDataStatus}) => {
-            const openFile = async () => {
-                let csvString, csvData
-                try {
-                    csvString = await pickFileGetString({type: 'text/comma-separated-values'})
-                    console.log(csvString)
-                } catch (e) {
-                    Alert.alert(e.message)
-                    return
-                }
-                csvData = Papa.parse<string[]>(csvString)
-                try {
-                    await dbi.setItemsFromData({rows: csvData.data, hasHeaderRow: true})
-                    setDataStatus(1)
-                    Alert.alert(Strings.DoneLoadingFile)
-                } catch (e) {
-                    Alert.alert(getItemDataErrorMessage(e))
-                }
-            }
-            return (<Button title={Strings.OpenFileButton} onPress={openFile} />)
-        }}
-        </Context.Consumer>
-    )
+export interface OpenFileButtonProps { navigation?: any; }
+
+export function OpenFileButton({ navigation }: OpenFileButtonProps) {
+    const { dispatch } = React.useContext(StoreContext)
+    const showError = (message: string) => {
+        Alert.alert(Strings.LoadFileError, message)
+    }
+    const success = () => {
+        if (navigation) {
+            Alert.alert(Strings.LoadFileDone)
+            navigation.navigate(Strings.ScreenNameView)
+        }
+    }
+    const onPress = () => dispatch(openFile(showError, success))
+
+    return <Button title={Strings.OpenFileButton} onPress={onPress} />
 }

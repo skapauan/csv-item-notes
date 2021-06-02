@@ -19,18 +19,27 @@ export const styles = StyleSheet.create({
         backgroundColor: '#999999',
         width: 50,
         height: 50,
-        padding: 5,
+        padding: 6,
     },
     topBar: {
         flexDirection: 'row',
         backgroundColor: '#AAAAAA',
         height: topBarHeight,
     },
+    topSearch: {
+        flex: 1,
+        flexDirection: 'row',
+    },
     topSearchInput: {
         flex: 1,
         height: 50,
         paddingHorizontal: 12,
-        fontSize: 30
+        fontSize: titleFontSize,
+    },
+    topSearchCancel: {
+        height: 50,
+        width: 50,
+        padding: 10
     },
     topTitle: {
         paddingVertical: 10,

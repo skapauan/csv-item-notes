@@ -3,7 +3,7 @@ import { Text, View } from 'react-native'
 import { styles } from './styles'
 
 interface TextProps {
-    children: any; //TODO
+    children: any;
 }
 
 export function P(props: TextProps) {

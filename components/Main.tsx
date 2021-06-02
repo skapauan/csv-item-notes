@@ -3,36 +3,23 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import { Intro } from './Intro'
 import { Loading } from './Loading'
 import { MainNavigation } from './MainNavigation'
-import { Context } from './Context'
-import { dbi } from '../db/dbInstance'
+import { StoreContext } from './shared/store'
+import { checkDataStatus } from './shared/async'
 
 const Drawer = createDrawerNavigator()
 
 export function Main() {
-    const [dataStatus, setDataStatus] = React.useState(-1)
-    React.useEffect(() => {
-        // When app starts, check if DB has data
-        dbi.init()
-        .then(() => setDataStatus(1))
-        .catch((e) => setDataStatus(0))
-    }, [])
+    const { dispatch, getState } = React.useContext(StoreContext)
 
-    let content
-    switch (dataStatus) {
-        case -1:
-            content = <Loading />
-            break
-        case 0:
-            content = <Intro />
-            break
+    // When app starts, check if DB has data and display appropriate screen
+    React.useEffect(() => dispatch(checkDataStatus()), [])
+
+    switch (getState().dataStatus) {
         case 1:
-            content = <MainNavigation />
-            break
+            return <MainNavigation />
+        case 0:
+            return <Intro />
+        default:
+            return <Loading />
     }
-
-    return (
-        <Context.Provider value={{ dataStatus, setDataStatus }}>
-            {content}
-        </Context.Provider>
-    )
 }
