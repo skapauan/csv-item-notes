@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { TopBar } from './TopBar'
 import { styles } from './shared/styles'
 import { P, DT, DD } from './shared/textComponents'
@@ -26,9 +26,12 @@ export function ViewScreen() {
     return (
         <View style={styles.outerView}>
             <TopBar showSearch={true} />
-            <View style={styles.body}>
+            <ScrollView
+                style={styles.bodyScrollOuter}
+                contentContainerStyle={styles.bodyScrollInner}
+                >
                 {content}
-            </View>
+            </ScrollView>
         </View>
     )
 }
