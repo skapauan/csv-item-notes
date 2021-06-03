@@ -26,10 +26,17 @@ export const DBQueries = {
         `SELECT CASE WHEN EXISTS (SELECT 1 FROM
         "${tableName.replace(/"/g, '""')}") THEN 0 ELSE 1 END AS isempty;`,
 
-    getSelectItemsWithColumnValue: (columnName: string, limitOne?: boolean) =>
-        `SELECT * FROM ${DBConstants.Items.Table}
+    getSelectItemsWithColumnValue: (columnName: string,
+        selectColumnNames?: string[], limitOne?: boolean) => 
+    {
+        let cols = '*'
+        if (selectColumnNames) {
+            cols = selectColumnNames.join(',')
+        }
+        return `SELECT ${cols} FROM ${DBConstants.Items.Table}
         WHERE "${columnName.replace(/"/g, '""')}" = ?
-        ${limitOne ? 'LIMIT 1' : ''};`,
+        ${limitOne ? 'LIMIT 1' : ''};`
+    },
 
     getUpdateItemNotes: (columnNames: string[]): string => {
         const sets: string[] = []

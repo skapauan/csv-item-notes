@@ -3,8 +3,11 @@ import { Pressable, TextInput, View } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { styles } from './shared/styles'
 import { Strings } from '../strings/strings'
+import { StoreContext } from './shared/store'
+import { findItemById } from './shared/async'
 
 export function TopSearch() {
+    const { dispatch } = React.useContext(StoreContext)
     const [text, setText] = useState('')
     const [isFocused, setIsFocused] = useState(false)
 
@@ -15,7 +18,9 @@ export function TopSearch() {
     const onBlur = () => {
         setIsFocused(false)
     }
-    const onSubmitEditing = () => {}
+    const onSubmitEditing = () => {
+        dispatch(findItemById(text))
+    }
     
     return (
         <View style={styles.topSearch}>

@@ -25,6 +25,8 @@ export const Strings = new LocalizedStrings({
         ErrorUnknown: 'Unknown Error',
         IntroInstructions: 'To begin, choose a CSV file from your device.',
         ItemIdPlaceholder: 'Enter item ID here',
+        ItemNotFound: 'Item not found',
+        ItemUnexpectedError: 'Unexpected database error. Please restart app.',
         LoadFileDone: 'Done loading data from file',
         LoadFileError: 'Error loading file',
         Loading: 'Loading...',

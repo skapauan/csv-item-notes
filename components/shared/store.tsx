@@ -4,18 +4,22 @@
 import React from 'react'
 import useThunkReducer, { Thunk } from 'react-hook-thunk-reducer'
 import { ActionTypes } from './actions'
-import { DBValue } from '../../db/constants'
+import { DBValue } from '../../db/db'
 
-export interface Item { [key: string]: DBValue; }
-export interface State { dataStatus: number; viewedItem: Item | undefined; }
 export interface Action { type: string; payload: any; }
 export interface StoreProviderProps { children: any; }
+export type Item = DBValue[]
 export type Dispatch = React.Dispatch<Action | Thunk<State, Action>>
 export type GetState = () => State
-
+export interface State {
+    dataStatus: number;
+    viewedItem: Item | undefined;
+    viewedError: string;
+}
 const initialState: State = {
     dataStatus: -1,
     viewedItem: undefined,
+    viewedError: '',
 }
 
 export const StoreContext = React.createContext({
@@ -31,6 +35,8 @@ export const StoreProvider = (props: StoreProviderProps) => {
                     return {...state, dataStatus: action.payload}
                 case ActionTypes.UpdateViewedItem:
                     return {...state, viewedItem: action.payload}
+                case ActionTypes.UpdateViewedError:
+                    return {...state, viewedError: action.payload}
                 default:
                     return state
             }

@@ -5,7 +5,8 @@ import Papa from 'papaparse'
 import { dbi } from '../../db/dbInstance'
 import { pickFileGetString } from '../../fs/fs'
 import { getItemDataErrorMessage } from '../../strings/dberrors'
-import { updateDataStatus } from './actions'
+import { Strings } from '../../strings/strings'
+import { updateDataStatus, updateViewedItem, updateViewedError } from './actions'
 import { Dispatch, GetState } from './store'
 
 export function checkDataStatus() {
@@ -40,7 +41,27 @@ export function openFile(showError: (m: string) => void, success: () => void) {
             dispatch(updateDataStatus(0))
             return
         }
+        dispatch(updateViewedItem(undefined))
+        dispatch(updateViewedError(''))
         dispatch(updateDataStatus(1))
         success()
+    }
+}
+
+export function findItemById(id: string) {
+    return async (dispatch: Dispatch, getState: GetState) => {
+        let item
+        try {
+            item = await dbi.findItemByFirstDataValue(id)
+        } catch (e) {
+            dispatch(updateViewedError(Strings.ItemUnexpectedError))
+            return
+        }
+        if (!item) {
+            dispatch(updateViewedError(Strings.ItemNotFound))
+            return
+        }
+        dispatch(updateViewedError(''))
+        dispatch(updateViewedItem(item))
     }
 }
