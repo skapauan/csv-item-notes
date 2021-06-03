@@ -24,12 +24,11 @@ export function openFile(showError: (m: string) => void, success: () => void) {
             csvString = await pickFileGetString({
                 type: 'text/comma-separated-values',
             })
-            console.log(csvString)
         } catch (e) {
             showError(e.message)
             return
         }
-        csvData = Papa.parse<string[]>(csvString)
+        csvData = Papa.parse<string[]>(csvString, { skipEmptyLines: true })
         dispatch(updateDataStatus(-1))
         try {
             await dbi.setItemsFromData({
