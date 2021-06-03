@@ -14,10 +14,8 @@ export function OpenScreen() {
     return (
         <View style={styles.outerView}>
             <TopBar title={Strings.ScreenNameOpen} />
-            <ScrollView
-                style={styles.bodyScrollOuter}
-                contentContainerStyle={styles.bodyScrollInner}
-                >
+            <ScrollView style={styles.bodyScrollOuter}
+                    contentContainerStyle={styles.bodyScrollInner}>
                 <P>{Strings.OpenFileInstructions}</P>
                 <FileRequirements />
                 <OpenFileButton navigation={navigation} />

@@ -12,19 +12,17 @@ export interface TopBarProps {
 
 export function TopBar(props: TopBarProps) {
     const navigation: any = useNavigation()
-    const search = props.showSearch
+    const onPress = () => navigation.toggleDrawer()
+    const content = props.showSearch
         ? (<TopSearch />)
         : (<View><Text style={styles.topTitle}>
             {props.title ? props.title : ''}</Text></View>)
     return (
         <View style={styles.topBar}>
-            <Pressable
-                style={styles.menuIcon}
-                onPress={() => navigation.toggleDrawer()}
-                >
+            <Pressable style={styles.menuIcon} onPress={onPress}>
                 <MaterialIcons name="menu" size={36} color="black" />
             </Pressable>
-            {search}
+            {content}
         </View>
     )
 }

@@ -1,16 +1,18 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { TopBar } from './TopBar'
 import { styles } from './shared/styles'
 import { P } from './shared/textComponents'
+import { Strings } from '../strings/strings'
 
 export function SettingsScreen() {
     return (
         <View style={styles.outerView}>
-            <TopBar />
-            <View style={styles.body}>
+            <TopBar title={Strings.ScreenNameSettings} />
+            <ScrollView style={styles.bodyScrollOuter}
+                    contentContainerStyle={styles.bodyScrollInner}>
                 <P>SettingsScreen</P>
-            </View>
+            </ScrollView>
         </View>
     )
 }

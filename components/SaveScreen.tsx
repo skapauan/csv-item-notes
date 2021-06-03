@@ -1,16 +1,18 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { TopBar } from './TopBar'
 import { styles } from './shared/styles'
 import { P } from './shared/textComponents'
+import { Strings } from '../strings/strings'
 
 export function SaveScreen() {
     return (
         <View style={styles.outerView}>
-            <TopBar />
-            <View style={styles.body}>
+            <TopBar title={Strings.ScreenNameSave} />
+            <ScrollView style={styles.bodyScrollOuter}
+                    contentContainerStyle={styles.bodyScrollInner}>
                 <P>SaveScreen</P>
-            </View>
+            </ScrollView>
         </View>
     )
 }

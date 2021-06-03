@@ -26,10 +26,8 @@ export function ViewScreen() {
     return (
         <View style={styles.outerView}>
             <TopBar showSearch={true} />
-            <ScrollView
-                style={styles.bodyScrollOuter}
-                contentContainerStyle={styles.bodyScrollInner}
-                >
+            <ScrollView style={styles.bodyScrollOuter}
+                    contentContainerStyle={styles.bodyScrollInner}>
                 {content}
             </ScrollView>
         </View>
