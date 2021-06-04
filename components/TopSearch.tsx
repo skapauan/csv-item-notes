@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { styles } from './shared/styles'
 import { Strings } from '../strings/strings'
 import { StoreContext } from './shared/store'
-import { findItemById } from './shared/async'
+import { findItemById } from './thunks/findItemById'
 
 export function TopSearch() {
     const { dispatch } = React.useContext(StoreContext)

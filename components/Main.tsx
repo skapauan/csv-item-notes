@@ -4,7 +4,7 @@ import { Intro } from './Intro'
 import { Loading } from './Loading'
 import { MainNavigation } from './MainNavigation'
 import { StoreContext } from './shared/store'
-import { checkDataStatus } from './shared/async'
+import { checkDataStatus } from './thunks/checkDataStatus'
 
 const Drawer = createDrawerNavigator()
 

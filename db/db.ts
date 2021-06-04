@@ -1,9 +1,9 @@
 import * as SQLite from 'expo-sqlite'
-import { SQLResultSet, SQLTransaction } from 'expo-sqlite'
-import { DBErrors } from './errors'
-import { DBQueries } from './queries'
+import { SQLError, SQLResultSet, SQLTransaction } from 'expo-sqlite'
 import { DBConstants } from './constants'
+import { DBErrors } from './errors'
 import { getDataColName, getNoteColName } from './names'
+import { DBQueries } from './queries'
 
 export type DBValue = string | number | boolean | null
 export type DBQuery = string | { text: string, values: DBValue[] }
@@ -63,15 +63,19 @@ export class DB {
         )
     }
 
-    query(query: DBQuery, transaction?: SQLTransaction)
-    : Promise<SQLResultSet> {
+    query(
+        query: DBQuery,
+        transaction?: SQLTransaction,
+        rollbackIfError: boolean = false
+    ): Promise<SQLResultSet> {
         // Prepare parameters
         let statement: string
         let args: any[] | undefined
         if (typeof query === 'string') {
             statement = query
-        } else if (query && typeof query.text === 'string' && typeof query.values === 'object'
-                && query.values && typeof query.values.length === 'number') {
+        } else if (query && typeof query.text === 'string'
+                && query.values && typeof query.values === 'object'
+                && typeof query.values.length === 'number') {
             statement = query.text
             args = query.values
         } else {
@@ -88,7 +92,7 @@ export class DB {
                     // executeSql error
                     (tx, error) => {
                         reject(error)
-                        return false // make ts compiler happy
+                        return rollbackIfError
                     }
                 )
             })
@@ -106,16 +110,65 @@ export class DB {
                         // executeSql error
                         (tx, error) => {
                             reject(error)
-                            return false // make ts compiler happy
+                            return rollbackIfError
                         }
                     )
                 },
                 // transaction error
-                (error) => {
-                    reject(error)
-                },
+                (error) => {},
                 // transaction success
                 () => {}
+            )
+        })
+    }
+
+    queryMany(
+        queries: DBQuery[],
+        onQueryDone?: (queryIndex: number) => void,
+        rollbackIfError: boolean = false
+    ): Promise<void> {
+        return new Promise((resolve, reject) => {
+            // Prepare parameters
+            const ql = queries.length
+            const queryStatements: string[] = []
+            const queryArgs: (any[] | undefined)[] = []
+            for (let i = 0; i < ql; i++) {
+                const query = queries[i]
+                if (typeof query === 'string') {
+                    queryStatements[i] = query
+                    queryArgs[i] = undefined
+                } else if (query && typeof query.text === 'string'
+                        && query.values && typeof query.values === 'object'
+                        && typeof query.values.length === 'number') {
+                    queryStatements[i] = query.text
+                    queryArgs[i] = query.values
+                } else {
+                    reject(new Error('Invalid query input'))
+                    return
+                }
+            }
+            // Queue the queries on a transaction
+            this.db.transaction(
+                // transaction callback
+                (tx) => {
+                    const sqlError = () => rollbackIfError
+                    if (onQueryDone) {
+                        const sqlSuccess = (i: number) => () => onQueryDone(i)
+                        for (let i = 0; i < ql; i++) {
+                            tx.executeSql(queryStatements[i], queryArgs[i],
+                                sqlSuccess(i), sqlError)
+                        }
+                    } else {
+                        for (let i = 0; i < ql; i++) {
+                            tx.executeSql(queryStatements[i], queryArgs[i],
+                                undefined, sqlError)
+                        }
+                    }
+                },
+                // transaction error
+                (error) => { reject(error) },
+                // transaction success
+                () => { resolve() }
             )
         })
     }
@@ -169,7 +222,10 @@ export class DB {
         }
     }
 
-    setItemsFromData(itemData: ItemDataInput, transaction?: SQLTransaction): Promise<void> {
+    setItemsFromData(
+        itemData: ItemDataInput,
+        getProgress?: (done: number, total: number) => void
+    ): Promise<void> {
         // Check input validity
         const { rows } = itemData
         const hasHeaderRow = itemData.hasHeaderRow !== false
@@ -251,7 +307,12 @@ export class DB {
             queries.push({ text: insertItem, values })
         }
         // Execute queries
-        return this.queryParallel(queries, transaction).then(() => {})
+        const total = queries.length
+        if (getProgress) getProgress(0, total)
+        const onQueryDone = getProgress
+            ? (queryIndex: number) => getProgress(++queryIndex, total)
+            : undefined
+        return this.queryMany(queries, onQueryDone, true).then(() => {})
     }
 
     findItemsByColumnValue(columnName: string, columnValue: DBValue, limitOne?: boolean
@@ -302,13 +363,13 @@ export class DB {
         })
     }
 
-    clearAll(transaction?: SQLTransaction): Promise<void> {
+    clearAll(): Promise<void> {
         this.initStatus = false
         this.itemColumns = []
-        return this.queryParallel([
+        return this.queryMany([
             DBQueries.DropItems,
             DBQueries.DropItemCols,
-        ], transaction)
+        ])
         .then(() => {})
     }
 
