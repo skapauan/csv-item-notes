@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Pressable, TextInput, View } from 'react-native'
+import { Keyboard, Pressable, TextInput, View } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
-import { styles } from './shared/styles'
+import { styles, topIconColor } from './shared/styles'
 import { Strings } from '../strings/strings'
 import { StoreContext } from './shared/store'
 import { findItemById } from './thunks/findItemById'
@@ -9,18 +9,25 @@ import { findItemById } from './thunks/findItemById'
 export function TopSearch() {
     const { dispatch } = React.useContext(StoreContext)
     const [text, setText] = useState('')
+    const [lastSearched, setLastSearched] = useState('')
     const [isFocused, setIsFocused] = useState(false)
 
     const onFocus = () => {
-        setText('')
+        if (text === lastSearched) setText('')
         setIsFocused(true)
     }
     const onBlur = () => {
         setIsFocused(false)
     }
     const onSubmitEditing = () => {
+        setLastSearched(text)
         dispatch(findItemById(text))
     }
+    const onPressDone = () => {
+        onSubmitEditing()
+        Keyboard.dismiss()
+    }
+    const onPressClear = () => setText('')
     
     return (
         <View style={styles.topSearch}>
@@ -34,12 +41,14 @@ export function TopSearch() {
                 placeholder={Strings.ItemIdPlaceholder}
                 style={styles.topSearchInput}
                 />
+            { isFocused && text !== '' && text !== lastSearched &&
+            <Pressable onPress={onPressClear} style={styles.topSearchButton}>
+                <MaterialIcons name="clear" size={28} color={topIconColor} />
+            </Pressable>
+            }
             { isFocused && text !== '' &&
-            <Pressable
-                onPress={() => setText('')}
-                style={styles.topSearchCancel}
-                >
-                <MaterialIcons name="clear" size={28} color="black" />
+            <Pressable onPress={onPressDone} style={styles.topSearchButton}>
+                <MaterialIcons name="done" size={28} color={topIconColor} />
             </Pressable>
             }
         </View>

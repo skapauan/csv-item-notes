@@ -11,7 +11,7 @@ export function SaveScreen() {
             <TopBar title={Strings.ScreenNameSave} />
             <ScrollView style={styles.bodyScrollOuter}
                     contentContainerStyle={styles.bodyScrollInner}>
-                <P>SaveScreen</P>
+                <P>{Strings.NothingHere}</P>
             </ScrollView>
         </View>
     )

@@ -11,7 +11,7 @@ export function SettingsScreen() {
             <TopBar title={Strings.ScreenNameSettings} />
             <ScrollView style={styles.bodyScrollOuter}
                     contentContainerStyle={styles.bodyScrollInner}>
-                <P>SettingsScreen</P>
+                <P>{Strings.NothingHere}</P>
             </ScrollView>
         </View>
     )

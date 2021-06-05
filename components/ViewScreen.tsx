@@ -5,6 +5,7 @@ import { styles } from './shared/styles'
 import { P, DT, DD } from './shared/textComponents'
 import { StoreContext } from './shared/store'
 import { dbi } from '../db/dbInstance'
+import { Strings } from '../strings/strings'
 
 export function ViewScreen() {
     const { getState } = React.useContext(StoreContext)
@@ -21,6 +22,8 @@ export function ViewScreen() {
             content.push(<DD key={key++}>{viewedItem[i]}</DD>)
             viewedItem[i]
         })
+    } else {
+        content = <P>{Strings.ViewScreenInstructions}</P>
     }
 
     return (

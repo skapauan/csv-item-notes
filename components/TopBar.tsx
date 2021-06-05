@@ -2,7 +2,7 @@ import React from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons } from '@expo/vector-icons'
-import { styles } from './shared/styles'
+import { styles, topIconColor } from './shared/styles'
 import { TopSearch } from './TopSearch'
 
 export interface TopBarProps {
@@ -20,7 +20,7 @@ export function TopBar(props: TopBarProps) {
     return (
         <View style={styles.topBar}>
             <Pressable style={styles.menuIcon} onPress={onPress}>
-                <MaterialIcons name="menu" size={36} color="black" />
+                <MaterialIcons name="menu" size={36} color={topIconColor} />
             </Pressable>
             {content}
         </View>
