@@ -4,23 +4,29 @@ import { Item } from './store'
 
 export const ActionTypes = {
     UpdateDataStatus: 'UpdateDataStatus',
+    UpdateOpenFileProgress: 'UpdateOpenFileProgress',
     UpdateViewedItem: 'UpdateViewedItem',
     UpdateViewedError: 'UpdateViewedError',
 }
 
 // Action creators
 
-export const updateDataStatus = (status: number) => ({
+export const updateDataStatus = (payload: number) => ({
     type: ActionTypes.UpdateDataStatus,
-    payload: status,
+    payload,
 })
 
-export const updateViewedItem = (item: Item | undefined) => ({
+export const updateOpenFileProgress = (payload: number) => ({
+    type: ActionTypes.UpdateOpenFileProgress,
+    payload,
+})
+
+export const updateViewedItem = (payload: Item | undefined) => ({
     type: ActionTypes.UpdateViewedItem,
-    payload: item,
+    payload,
 })
 
-export const updateViewedError = (message: string) => ({
+export const updateViewedError = (payload: string) => ({
     type: ActionTypes.UpdateViewedError,
-    payload: message,
+    payload,
 })

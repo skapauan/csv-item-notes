@@ -13,19 +13,16 @@ export type Dispatch = React.Dispatch<Action | Thunk<State, Action>>
 export type GetState = () => State
 export interface State {
     dataStatus: number;
+    openFileProgress: number;
     viewedItem: Item | undefined;
     viewedError: string;
 }
 const initialState: State = {
     dataStatus: -1,
+    openFileProgress: -1,
     viewedItem: undefined,
     viewedError: '',
 }
-
-export const StoreContext = React.createContext({
-    dispatch: (actionOrThunk: Action | Thunk<State, Action>): void => {},
-    getState: (): State => initialState,
-})
 
 export const StoreProvider = (props: StoreProviderProps) => {
     const [state, dispatch] = useThunkReducer(
@@ -33,6 +30,8 @@ export const StoreProvider = (props: StoreProviderProps) => {
             switch (action.type) {
                 case ActionTypes.UpdateDataStatus:
                     return {...state, dataStatus: action.payload}
+                case ActionTypes.UpdateOpenFileProgress:
+                    return {...state, openFileProgress: action.payload}
                 case ActionTypes.UpdateViewedItem:
                     return {...state, viewedItem: action.payload}
                 case ActionTypes.UpdateViewedError:
@@ -50,3 +49,8 @@ export const StoreProvider = (props: StoreProviderProps) => {
         </StoreContext.Provider>
     )
 }
+
+export const StoreContext = React.createContext({
+    dispatch: (actionOrThunk: Action | Thunk<State, Action>): void => {},
+    getState: (): State => initialState,
+})

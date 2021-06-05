@@ -39,7 +39,7 @@ export class DB {
     itemColumns: ItemColumn[]
     savedQueries = {
         firstDataColumnName: '',
-        itemColumnNames: [''],
+        itemColumnNames: [] as string[],
         selectItemByFirstDataValue: '',
     }
 
@@ -124,7 +124,6 @@ export class DB {
 
     queryMany(
         queries: DBQuery[],
-        onQueryDone?: (queryIndex: number) => void,
         rollbackIfError: boolean = false
     ): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -147,22 +146,14 @@ export class DB {
                     return
                 }
             }
-            // Queue the queries on a transaction
+            // Execute the queries on one transaction
             this.db.transaction(
                 // transaction callback
                 (tx) => {
                     const sqlError = () => rollbackIfError
-                    if (onQueryDone) {
-                        const sqlSuccess = (i: number) => () => onQueryDone(i)
-                        for (let i = 0; i < ql; i++) {
-                            tx.executeSql(queryStatements[i], queryArgs[i],
-                                sqlSuccess(i), sqlError)
-                        }
-                    } else {
-                        for (let i = 0; i < ql; i++) {
-                            tx.executeSql(queryStatements[i], queryArgs[i],
-                                undefined, sqlError)
-                        }
+                    for (let i = 0; i < ql; i++) {
+                        tx.executeSql(queryStatements[i], queryArgs[i],
+                            undefined, sqlError)
                     }
                 },
                 // transaction error
@@ -173,40 +164,57 @@ export class DB {
         })
     }
 
-    queryParallel(queries: DBQuery[], transaction?: SQLTransaction)
-    : Promise<SQLResultSet[]> {
-        const promises: Promise<SQLResultSet>[] = []
-        queries.forEach((query) => {
-            promises.push(this.query(query, transaction))
-        })
-        return Promise.all(promises)
-        .then(results => results)
-        .catch(error => Promise.reject(error))
+    queryManyInChunks(
+        queries: DBQuery[],
+        getProgress: (queriesCompleted: number) => void = () => {},
+        chunkSize: number = 1000,
+    ): Promise<void> {
+        // Divide queries into chunks, use queryMany() for each chunk
+        chunkSize = Math.floor(chunkSize)
+        if (chunkSize < 1) {
+            return Promise.reject(new Error('Chunk size must be greater than or equal to 1.'))
+        }
+        try {
+            getProgress(0)
+        } catch (e) {
+            return Promise.reject(new Error('Input function getProgress() threw error'))
+        }
+        const promises = []
+        const ql = queries.length
+        for (let start = 0, count = 0; start < ql; start += chunkSize + 1) {
+            const chunkQueries = queries.slice(start, start + chunkSize)
+            count += chunkQueries.length
+            const completed = count
+            promises.push(
+                this.queryMany(chunkQueries).then(() => getProgress(completed))
+            )
+        }
+        return Promise.all(promises).then(() => {})
     }
 
     isInit(): boolean {
         return this.initStatus
     }
 
-    async init(transaction?: SQLTransaction): Promise<void> {
+    async init(): Promise<void> {
         if (this.initStatus) return
         try {
             // Cannot proceed without an Items table with at least one row
-            if (!(await this.hasTable(DBConstants.Items.Table, transaction))) {
+            if (!(await this.hasTable(DBConstants.Items.Table))) {
                 return Promise.reject(new Error(DBErrors.NO_ITEM_TABLE))
             }
-            if (await this.isTableEmpty(DBConstants.Items.Table, transaction)) {
+            if (await this.isTableEmpty(DBConstants.Items.Table)) {
                 return Promise.reject(new Error(DBErrors.NO_ITEM_ROWS))
             }
             // Populate DB.itemColumns from Items table_info and ItemCols rows
             this.itemColumns = []
-            const info = await this.query(DBQueries.SelectItemsTableInfo, transaction)
+            const info = await this.query(DBQueries.SelectItemsTableInfo)
             for (let i = 0, row; !!(row = info.rows.item(i)); i++) {
                 if (row.name === DBConstants.Items.Id) continue
                 this.itemColumns.push({ name: row.name, type: row.type })
             }
-            if (await this.hasTable(DBConstants.ItemCols.Table, transaction)) {
-                const result = await this.query(DBQueries.SelectAllItemCols, transaction)
+            if (await this.hasTable(DBConstants.ItemCols.Table)) {
+                const result = await this.query(DBQueries.SelectAllItemCols)
                 for (let i = 0, row: ItemColsRow; !!(row = result.rows.item(i)); i++) {
                     const ic = this.itemColumns.find((col) => col.name === row.name)
                     if (ic) {
@@ -308,11 +316,10 @@ export class DB {
         }
         // Execute queries
         const total = queries.length
-        if (getProgress) getProgress(0, total)
-        const onQueryDone = getProgress
-            ? (queryIndex: number) => getProgress(++queryIndex, total)
+        const progress = getProgress
+            ? (done: number) => getProgress(done, total)
             : undefined
-        return this.queryMany(queries, onQueryDone, true).then(() => {})
+        return this.queryManyInChunks(queries, progress)
     }
 
     findItemsByColumnValue(columnName: string, columnValue: DBValue, limitOne?: boolean

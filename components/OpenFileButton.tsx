@@ -21,7 +21,7 @@ export function OpenFileButton({ navigation }: OpenFileButtonProps) {
                 .replace('%', '' + document.name)
                 .replace('%', '' + document.size)
                 .replace('%', '' + rows)
-                .replace('%', '' + Math.round(loadTime / 1000))
+                .replace('%', '' + (loadTime / 1000))
         )
         if (navigation) {
             navigation.navigate(Strings.ScreenNameView)
