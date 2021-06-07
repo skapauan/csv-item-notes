@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite'
-import { SQLError, SQLResultSet, SQLTransaction } from 'expo-sqlite'
+import { SQLResultSet, SQLTransaction } from 'expo-sqlite'
 import { DBConstants } from './constants'
 import { DBErrors } from './errors'
 import { getDataColName, getNoteColName } from './names'
@@ -14,6 +14,7 @@ export type ItemColumn = {
     type: ColumnType;
     title?: string;
     isNote?: boolean;
+    order?: number | null;
 }
 export type ItemsRow = { [name: string]: DBValue }
 export type ItemColsRow = {
@@ -21,6 +22,7 @@ export type ItemColsRow = {
     'name': string;
     'title': string;
     'is_note': number;
+    'order': number | null;
 }
 export enum ColumnType {
     Text = 'TEXT',
@@ -220,6 +222,7 @@ export class DB {
                     if (ic) {
                         ic.title = row.title || ic.name
                         ic.isNote = row.is_note !== 0
+                        ic.order = typeof row.order === 'number' ? row.order : null
                     }
                 }
             }
@@ -258,13 +261,18 @@ export class DB {
             DBQueries.DropItemCols,
             DBQueries.CreateItemCols,
         ]
+        let orderCounter = 0
         for (let i = 0; i < numCols; i++) {
-            let name = getDataColName(i), title = name,
-                isNote = false, type: ColumnType = ColumnTypes.Text
+            let name = getDataColName(i)
+            let title = name
+            let type: ColumnType = ColumnTypes.Text
+            let isNote = false
+            let order = null
             if (hasHeaderRow) {
                 title = firstRow[i]
                 if (title.startsWith(DBConstants.CsvNotePrefix)) {
                     isNote = true
+                    order = orderCounter++
                     name = getNoteColName(i)
                     title = title.slice(DBConstants.CsvNotePrefix.length)
                     const suffixIndex = title.indexOf(DBConstants.CsvNoteTypeSuffix)
@@ -282,10 +290,10 @@ export class DB {
                     }
                 }
             }
-            this.itemColumns.push({ name, type, title, isNote })
+            this.itemColumns.push({ name, type, title, isNote, order })
             queries.push({
                 text: DBQueries.InsertItemCol,
-                values: [name, title, isNote],
+                values: [name, title, isNote, order],
             })
         }
         this.updateSavedQueries()

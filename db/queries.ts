@@ -52,7 +52,8 @@ export const DBQueries = {
         ${DBConstants.ItemCols.Id} INTEGER PRIMARY KEY NOT NULL,
         ${DBConstants.ItemCols.Name} TEXT,
         ${DBConstants.ItemCols.Title} TEXT,
-        ${DBConstants.ItemCols.IsNote} BOOLEAN);`,
+        ${DBConstants.ItemCols.IsNote} BOOLEAN),
+        ${DBConstants.ItemCols.Order} INTEGER);`,
 
     DropItems:
         `DROP TABLE IF EXISTS "${DBConstants.Items.Table}";`,
@@ -63,11 +64,13 @@ export const DBQueries = {
     InsertItemCol:
         `INSERT INTO "${DBConstants.ItemCols.Table}"
         (${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
-        ${DBConstants.ItemCols.IsNote}) VALUES (?, ?, ?);`,
+        ${DBConstants.ItemCols.IsNote}, ${DBConstants.ItemCols.Order})
+        VALUES (?, ?, ?);`,
 
     SelectAllItemCols:
         `SELECT ${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
-        ${DBConstants.ItemCols.IsNote} FROM "${DBConstants.ItemCols.Table}";`,
+        ${DBConstants.ItemCols.IsNote}, ${DBConstants.ItemCols.Order}
+        FROM "${DBConstants.ItemCols.Table}";`,
     
     SelectItemsTableInfo:
         `SELECT name, type FROM PRAGMA_TABLE_INFO("${DBConstants.Items.Table}");`,

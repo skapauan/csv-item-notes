@@ -14,5 +14,6 @@ export const DBConstants = {
         Name: 'name',
         Title: 'title',
         IsNote: 'is_note',
+        Order: 'order',
     },
 }
