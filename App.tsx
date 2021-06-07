@@ -7,7 +7,7 @@ import { Main } from './components/Main'
 export default function App() {
     return (
         <SafeAreaProvider>
-            <StatusBar style="auto" />
+            <StatusBar style="light" backgroundColor="black" />
             <StoreProvider>
                 <Main />
             </StoreProvider>
