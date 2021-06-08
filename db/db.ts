@@ -10,6 +10,7 @@ export type DBQuery = string | { text: string, values: DBValue[] }
 export type NotesInput = { colName: string, value: DBValue }[]
 export type ItemDataInput = { rows: string[][], hasHeaderRow?: boolean }
 export type ItemColumn = {
+    id?: number;
     name: string;
     type: ColumnType;
     title?: string;
@@ -220,6 +221,7 @@ export class DB {
                 for (let i = 0, row: ItemColsRow; !!(row = result.rows.item(i)); i++) {
                     const ic = this.itemColumns.find((col) => col.name === row.name)
                     if (ic) {
+                        ic.id = row.item_col_id
                         ic.title = row.title || ic.name
                         ic.isNote = row.is_note !== 0
                         ic.order = typeof row.order === 'number' ? row.order : null
@@ -229,6 +231,7 @@ export class DB {
             this.updateSavedQueries()
             this.initStatus = true
         } catch (e) {
+            this.initStatus = false
             return Promise.reject(e)
         }
     }
@@ -254,8 +257,8 @@ export class DB {
                 return Promise.reject(new Error(DBErrors.INVALID_FIELD_VARIANCE))
             }
         }
-        // Populate DB.itemColumns; Construct queries to populate ItemCols table
-        this.itemColumns = []
+        // Construct queries to populate ItemCols table
+        const columns = []
         const queries: DBQuery[] = [
             DBQueries.DropItems,
             DBQueries.DropItemCols,
@@ -290,7 +293,7 @@ export class DB {
                     }
                 }
             }
-            this.itemColumns.push({ name, type, title, isNote, order })
+            columns.push({ name, type, isNote })
             queries.push({
                 text: DBQueries.InsertItemCol,
                 values: [name, title, isNote, order],
@@ -300,7 +303,7 @@ export class DB {
         // Construct queries to create and populate Items table
         const colDecs: string[] = []
         const colNames: string[] = []
-        this.itemColumns.forEach((col) => {
+        columns.forEach((col) => {
             colDecs.push(`${col.name} ${col.type}`)
             colNames.push(col.name)
         })
@@ -310,7 +313,7 @@ export class DB {
             const row = rows[i], values: DBValue[] = []
             for (let j = 0; j < numCols; j++) {
                 let value: DBValue = row[j]
-                const col = this.itemColumns[j]
+                const col = columns[j]
                 if (col.isNote) {
                     if (col.type === ColumnTypes.Boolean) {
                         value = (value === '1') ? 1 : null
@@ -328,6 +331,7 @@ export class DB {
             ? (done: number) => getProgress(done, total)
             : undefined
         return this.queryManyInChunks(queries, progress)
+        .then(() => this.init())
     }
 
     findItemsByColumnValue(columnName: string, columnValue: DBValue, limitOne?: boolean
