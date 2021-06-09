@@ -4,7 +4,7 @@
 import React from 'react'
 import useThunkReducer, { Thunk } from 'react-hook-thunk-reducer'
 import { ActionTypes } from './actions'
-import { DBValue } from '../../db/db'
+import { DBValue } from '../../db/types'
 
 export interface Action { type: string; payload: any; }
 export interface StoreProviderProps { children: any; }

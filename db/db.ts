@@ -4,37 +4,9 @@ import { DBConstants } from './constants'
 import { DBErrors } from './errors'
 import { getDataColName, getNoteColName } from './names'
 import { DBQueries } from './queries'
-
-export type DBValue = string | number | boolean | null
-export type DBQuery = string | { text: string, values: DBValue[] }
-export type NotesInput = { colName: string, value: DBValue }[]
-export type ItemDataInput = { rows: string[][], hasHeaderRow?: boolean }
-export type ItemColumn = {
-    id?: number;
-    name: string;
-    type: ColumnType;
-    title?: string;
-    isNote?: boolean;
-    order?: number | null;
-}
-export type ItemsRow = { [name: string]: DBValue }
-export type ItemColsRow = {
-    'item_col_id': number;
-    'name': string;
-    'title': string;
-    'is_note': number;
-    'order': number | null;
-}
-export enum ColumnType {
-    Text = 'TEXT',
-    Numeric = 'NUMERIC', // tries to convert to INTEGER or REAL
-    Boolean = 'BOOLEAN', // booleans stored and returned as INTEGER 0 or 1
-}
-export const ColumnTypes = {
-    Text: ColumnType['Text'],
-    Numeric: ColumnType['Numeric'],
-    Boolean: ColumnType['Boolean'],
-}
+import { getItemColumnValues } from './results'
+import { ColumnType, ColumnTypes, DBQuery, DBValue, ItemColsRow, ItemColumn,
+    ItemDataInput, NotesInput } from './types'
 
 export class DB {
     db: SQLite.Database
@@ -344,7 +316,7 @@ export class DB {
                 columnName, this.savedQueries.itemColumnNames, limitOne),
             values: [columnValue],
         }, transaction)
-        .then((result) => this.getItemColumnValuesFromResult(result))
+        .then((result) => getItemColumnValues(result, this.itemColumns))
     }
 
     findItemByFirstDataValue(value: DBValue, transaction?: SQLTransaction)
@@ -353,7 +325,7 @@ export class DB {
             text: this.savedQueries.selectItemByFirstDataValue,
             values: [value],
         }, transaction)
-        .then((result) => this.getItemColumnValuesFromResult(result)[0])
+        .then((result) => getItemColumnValues(result, this.itemColumns)[0])
     }
 
     updateItemNotes(itemId: number, notes: NotesInput, transaction?: SQLTransaction)
@@ -393,29 +365,6 @@ export class DB {
             DBQueries.DropItemCols,
         ])
         .then(() => {})
-    }
-
-    getItemColumnValuesFromResult = (result: SQLResultSet): DBValue[][] => {
-        const output: DBValue[][] = []
-        const ic = this.itemColumns
-        const icl = this.itemColumns.length
-        if (result.rows.length > 0) {
-            for (let i = 0, row: ItemsRow; !!(row = result.rows.item(i)); i++) {
-                const valueRow: DBValue[] = []
-                for (let j = 0; j < icl; j++) {
-                    const col = ic[j]
-                    let value = row[col.name]
-                    if (typeof value === 'undefined') {
-                        value = null
-                    } else if (col.type === ColumnTypes.Boolean) {
-                        value = value === 1 ? true : null
-                    }
-                    valueRow.push(value)
-                }
-                output.push(valueRow)
-            }
-        }
-        return output
     }
 
 }
