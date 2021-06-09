@@ -309,7 +309,7 @@ export class DB {
         })
         queries.push(DBQueries.getCreateItems(colDecs))
         const insertItem = DBQueries.getInsertItem(colNames)
-        for (let i = 0; i < numRows; i++) {
+        for (let i = hasHeaderRow ? 1 : 0; i < numRows; i++) {
             const row = rows[i], values: DBValue[] = []
             for (let j = 0; j < numCols; j++) {
                 let value: DBValue = row[j]
