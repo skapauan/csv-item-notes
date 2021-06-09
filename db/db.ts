@@ -331,7 +331,10 @@ export class DB {
             ? (done: number) => getProgress(done, total)
             : undefined
         return this.queryManyInChunks(queries, progress)
-        .then(() => this.init())
+        .then(() => {
+            this.initStatus = false
+            return this.init()
+        })
     }
 
     findItemsByColumnValue(columnName: string, columnValue: DBValue, limitOne?: boolean

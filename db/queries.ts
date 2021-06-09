@@ -52,7 +52,7 @@ export const DBQueries = {
         ${DBConstants.ItemCols.Id} INTEGER PRIMARY KEY NOT NULL,
         ${DBConstants.ItemCols.Name} TEXT,
         ${DBConstants.ItemCols.Title} TEXT,
-        ${DBConstants.ItemCols.IsNote} BOOLEAN),
+        ${DBConstants.ItemCols.IsNote} BOOLEAN,
         ${DBConstants.ItemCols.Order} INTEGER);`,
 
     DropItems:
@@ -65,7 +65,7 @@ export const DBQueries = {
         `INSERT INTO "${DBConstants.ItemCols.Table}"
         (${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
         ${DBConstants.ItemCols.IsNote}, ${DBConstants.ItemCols.Order})
-        VALUES (?, ?, ?);`,
+        VALUES (?, ?, ?, ?);`,
 
     SelectAllItemCols:
         `SELECT ${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
