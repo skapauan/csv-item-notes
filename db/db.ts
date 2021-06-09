@@ -257,13 +257,14 @@ export class DB {
                 return Promise.reject(new Error(DBErrors.INVALID_FIELD_VARIANCE))
             }
         }
-        // Construct queries to populate ItemCols table
-        const columns = []
+        // Construct queries to drop tables and create ItemCols table
         const queries: DBQuery[] = [
             DBQueries.DropItems,
             DBQueries.DropItemCols,
             DBQueries.CreateItemCols,
         ]
+        // Construct queries to populate ItemCols table
+        const columns = []
         let orderCounter = 0
         for (let i = 0; i < numCols; i++) {
             let name = getDataColName(i)
@@ -299,7 +300,6 @@ export class DB {
                 values: [name, title, isNote, order],
             })
         }
-        this.updateSavedQueries()
         // Construct queries to create and populate Items table
         const colDecs: string[] = []
         const colNames: string[] = []
