@@ -2,11 +2,13 @@ import * as SQLite from 'expo-sqlite'
 import { SQLResultSet, SQLTransaction } from 'expo-sqlite'
 import { DBConstants } from './constants'
 import { DBErrors } from './errors'
-import { getDataColName, getNoteColName } from './names'
+import { getDataColName, getLastColNumber, getLastOrder, getNoteColName }
+    from './names'
 import { DBQueries } from './queries'
 import { getItemColumnValues } from './results'
-import { ColumnType, ColumnTypes, DBQuery, DBValue, ItemColsRow, ItemColumn,
-    ItemDataInput, NotesInput } from './types'
+import { ColumnType, ColumnTypes, CreateNoteInput, DBQuery, DBValue,
+    ItemColsRow, ItemColumn, ItemDataInput, NotesInput }
+    from './types'
 
 export class DB {
     db: SQLite.Database
@@ -327,6 +329,26 @@ export class DB {
             values: [value],
         }, transaction)
         .then((result) => getItemColumnValues(result, this.itemColumns)[0])
+    }
+
+    createNoteColumns(columns: CreateNoteInput[]): Promise<void> {
+        const queries: DBQuery[] = []
+        let lastColNum = getLastColNumber(this.itemColumns)
+        let lastOrder = getLastOrder(this.itemColumns)
+        columns.forEach((col) => {
+            const name = getNoteColName(++lastColNum)
+            const order = ++lastOrder
+            queries.push(DBQueries.getAlterItemsAddColumn(name, col.type))
+            queries.push({
+                text: DBQueries.InsertItemCol,
+                values: [name, col.title, true, order],
+            })
+        })
+        return this.queryMany(queries, true)
+        .then(() => {
+            this.initStatus = false
+            return this.init()
+        })
     }
 
     updateItemNotes(itemId: number, notes: NotesInput, transaction?: SQLTransaction)

@@ -1,6 +1,11 @@
 import { DBConstants } from './constants'
+import { ColumnType } from './types'
 
 export const DBQueries = {
+
+    getAlterItemsAddColumn: (columnName: string, columnType: ColumnType) =>
+        `ALTER TABLE ${DBConstants.Items.Table}
+        ADD COLUMN ${columnName} ${columnType};`,
     
     getCreateItems: (columnDeclarations: string[]) => {
         const cols = [
