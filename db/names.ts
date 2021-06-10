@@ -40,8 +40,6 @@ export const getLastOrder = (itemColumns: ItemColumn[]): number => {
         if (typeof ord === 'number' && ord > maxOrd)
             maxOrd = ord
     }
-    console.log(itemColumns)
-    console.log(maxOrd)
     if (maxOrd === Number.NEGATIVE_INFINITY)
         return -1
     return maxOrd

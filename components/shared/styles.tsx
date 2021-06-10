@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
         marginTop: Constants.statusBarHeight,
         flex: 1,
     },
-    menuIcon: {
+    iconButton: {
         width: 50,
         height: 50,
         padding: 6,
@@ -108,5 +108,9 @@ export const styles = StyleSheet.create({
         paddingLeft: bodyTextIndent,
         fontSize: bodyFontSize,
         color: bodyColorRegular,
+    },
+    textInput: {
+        color: bodyColorRegular,
+        fontSize: bodyFontSize,
     },
 })

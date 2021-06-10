@@ -3,10 +3,19 @@ import * as Localization from 'expo-localization'
 
 export const Strings = new LocalizedStrings({
     en: {
+        ButtonCancel: 'Cancel',
+        ButtonSave: 'Save',
         OpenFileButton: 'Choose CSV file',
         OpenFileInstructions:
             'This will replace all your current data and notes in the app, so'
             + ' please save a file first if you wish to keep them.',
+        FieldAddButton: 'Add Note Field',
+        FieldDefaultTitle: 'Note ',
+        FieldTitle: 'Field title:',
+        FieldType: 'Field type:',
+        FieldTypeBoolean: 'Checkbox',
+        FieldTypeNumeric: 'Number',
+        FieldTypeText: 'Text',
         FileRequirements: 'CSV file requirements:',
         FileRequirement1:
             'The first row must contain titles for the columns.',
@@ -14,6 +23,7 @@ export const Strings = new LocalizedStrings({
             'The first column must contain unique ID numbers for each item.',
         FileRequirement3:
             'There must be at least one row of data.',
+        Error: 'Error',
         ErrorInvalidNumberRows:
             'Invalid CSV: At least one row of data is required, not including'
             + ' the header row',
@@ -33,6 +43,7 @@ export const Strings = new LocalizedStrings({
         Loading: 'Loading...',
         NothingHere: 'Nothing here yet!',
         ScreenNameView: 'View Current Data',
+        ScreenNameFields: 'Configure Note Fields',
         ScreenNameSave: 'Save As File',
         ScreenNameOpen: 'Open File',
         ScreenNameSettings: 'Settings',

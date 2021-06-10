@@ -19,7 +19,7 @@ export function TopBar(props: TopBarProps) {
             {props.title ? props.title : ''}</Text></View>)
     return (
         <View style={styles.topBar}>
-            <Pressable style={styles.menuIcon} onPress={onPress}>
+            <Pressable style={styles.iconButton} onPress={onPress}>
                 <MaterialIcons name="menu" size={36} color={topIconColor} />
             </Pressable>
             {content}

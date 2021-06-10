@@ -1,9 +1,12 @@
+import { ItemColumn } from '../../db/types'
 import { Item } from './store'
 
 // Action types
 
 export const ActionTypes = {
     UpdateDataStatus: 'UpdateDataStatus',
+    UpdateFieldEditStatus: 'UpdateFieldEditStatus',
+    UpdateNoteFields: 'UpdateNoteFields',
     UpdateOpenFileProgress: 'UpdateOpenFileProgress',
     UpdateViewedItem: 'UpdateViewedItem',
     UpdateViewedError: 'UpdateViewedError',
@@ -13,6 +16,16 @@ export const ActionTypes = {
 
 export const updateDataStatus = (payload: number) => ({
     type: ActionTypes.UpdateDataStatus,
+    payload,
+})
+
+export const updateFieldEditStatus = (payload: ItemColumn | boolean) => ({
+    type: ActionTypes.UpdateFieldEditStatus,
+    payload,
+})
+
+export const updateNoteFields = (payload: ItemColumn[]) => ({
+    type: ActionTypes.UpdateNoteFields,
     payload,
 })
 

@@ -6,6 +6,7 @@ import { Dispatch, GetState } from '../shared/store'
 import { dbi } from '../../db/dbInstance'
 import { getItemDataErrorMessage } from '../../strings/dberrors'
 import { Strings } from '../../strings/strings'
+import { getNoteFields } from './getNoteFields'
 
 export type FileInfo = {
     document: DocumentPicker.DocumentResult;
@@ -62,6 +63,7 @@ export function openFile(
             dispatch(updateOpenFileProgress(-1))
             return
         }
+        dispatch(getNoteFields())
         // Show file info and go to main app
         const timeEnd = Date.now()
         dispatch(updateViewedItem(undefined))
