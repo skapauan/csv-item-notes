@@ -24,7 +24,7 @@ export class DB {
         this.itemColumns = []
     }
 
-    updateSavedQueries() {
+    updateSavedQueries(): void {
         const q = this.savedQueries
         let firstDataCol = this.itemColumns.find((col) => !col.isNote)
         if (!firstDataCol) {
@@ -186,7 +186,7 @@ export class DB {
             const info = await this.query(DBQueries.SelectItemsTableInfo)
             for (let i = 0, row; !!(row = info.rows.item(i)); i++) {
                 if (row.name === DBConstants.Items.Id) continue
-                this.itemColumns.push({ name: row.name, type: row.type })
+                this.itemColumns.push({ index: i, name: row.name, type: row.type })
             }
             if (await this.hasTable(DBConstants.ItemCols.Table)) {
                 const result = await this.query(DBQueries.SelectAllItemCols)
@@ -196,7 +196,8 @@ export class DB {
                         ic.id = row.item_col_id
                         ic.title = row.title || ic.name
                         ic.isNote = row.is_note !== 0
-                        ic.order = typeof row.order === 'number' ? row.order : null
+                        if (typeof row.note_order === 'number')
+                            ic.order = row.note_order
                     }
                 }
             }

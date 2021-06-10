@@ -5,11 +5,12 @@ export type NotesInput = { colName: string, value: DBValue }[]
 export type ItemDataInput = { rows: string[][], hasHeaderRow?: boolean }
 export type ItemColumn = {
     id?: number;
+    index: number;
     name: string;
     type: ColumnType;
     title?: string;
     isNote?: boolean;
-    order?: number | null;
+    order?: number;
 }
 export type ItemsRow = { [name: string]: DBValue }
 export type ItemColsRow = {
@@ -17,7 +18,7 @@ export type ItemColsRow = {
     'name': string;
     'title': string;
     'is_note': number;
-    'order': number | null;
+    'note_order': number | null;
 }
 export enum ColumnType {
     Text = 'TEXT',
