@@ -1,5 +1,5 @@
 import { DBConstants } from './constants'
-import { ColumnType } from './types'
+import { ColumnType, DBQuery, DBValue, EditNoteInput } from './types'
 
 export const DBQueries = {
 
@@ -41,6 +41,28 @@ export const DBQueries = {
         return `SELECT ${cols} FROM ${DBConstants.Items.Table}
         WHERE "${columnName.replace(/"/g, '""')}" = ?
         ${limitOne ? 'LIMIT 1' : ''};`
+    },
+
+    getUpdateItemCol: ({ id, title, order }: EditNoteInput)
+    : DBQuery | undefined => {
+        const sets: string[] = []
+        const values: DBValue[] = []
+        if (typeof title === 'string') {
+            sets.push(`${DBConstants.ItemCols.Title} = ?`)
+            values.push(title)
+        }
+        if (typeof order === 'number') {
+            sets.push(`${DBConstants.ItemCols.Order} = ?`)
+            values.push(order)
+        }
+        if (sets.length < 1) return
+        values.push(id)
+        return {
+            text: `UPDATE ${DBConstants.ItemCols.Table}
+                SET ${sets.join(',')}
+                WHERE ${DBConstants.ItemCols.Id} = ?;`,
+            values,
+        }
     },
 
     getUpdateItemNotes: (columnNames: string[]): string => {

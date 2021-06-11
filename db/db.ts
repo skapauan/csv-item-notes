@@ -7,7 +7,7 @@ import { getDataColName, getLastColNumber, getLastOrder, getNoteColName }
 import { DBQueries } from './queries'
 import { getItemColumnValues } from './results'
 import { ColumnType, ColumnTypes, CreateNoteInput, DBQuery, DBValue,
-    ItemColsRow, ItemColumn, ItemDataInput, NotesInput }
+    EditNoteInput, ItemColsRow, ItemColumn, ItemDataInput, NotesInput }
     from './types'
 
 export class DB {
@@ -343,6 +343,19 @@ export class DB {
                 text: DBQueries.InsertItemCol,
                 values: [name, col.title, true, order],
             })
+        })
+        return this.queryMany(queries, true)
+        .then(() => {
+            this.initStatus = false
+            return this.init()
+        })
+    }
+    
+    updateNoteColumns(columns: EditNoteInput[]): Promise<void> {
+        const queries: DBQuery[] = []
+        columns.forEach((col) => {
+            const query = DBQueries.getUpdateItemCol(col)
+            if (query) queries.push(query)
         })
         return this.queryMany(queries, true)
         .then(() => {

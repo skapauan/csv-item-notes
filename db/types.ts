@@ -16,6 +16,11 @@ export type CreateNoteInput = {
     title: string;
     type: ColumnType;
 }
+export type EditNoteInput = {
+    id: number;
+    title?: string;
+    order?: number;
+}
 export type ItemsRow = { [name: string]: DBValue }
 export type ItemColsRow = {
     'item_col_id': number;
