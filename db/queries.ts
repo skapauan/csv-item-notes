@@ -65,7 +65,7 @@ export const DBQueries = {
 
     DropItemCols:
         `DROP TABLE IF EXISTS "${DBConstants.ItemCols.Table}";`,
-    
+
     InsertItemCol:
         `INSERT INTO "${DBConstants.ItemCols.Table}"
         (${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
@@ -73,11 +73,11 @@ export const DBQueries = {
         VALUES (?, ?, ?, ?);`,
 
     SelectAllItemCols:
-        `SELECT ${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
-        ${DBConstants.ItemCols.IsNote}, ${DBConstants.ItemCols.Order}
-        FROM "${DBConstants.ItemCols.Table}";`,
-    
+        `SELECT ${DBConstants.ItemCols.Id}, ${DBConstants.ItemCols.Name},
+        ${DBConstants.ItemCols.Title}, ${DBConstants.ItemCols.IsNote},
+        ${DBConstants.ItemCols.Order} FROM "${DBConstants.ItemCols.Table}";`,
+
     SelectItemsTableInfo:
         `SELECT name, type FROM PRAGMA_TABLE_INFO("${DBConstants.Items.Table}");`,
-        
+
 }
