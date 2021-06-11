@@ -158,7 +158,7 @@ export class DB {
         }
         const promises = []
         const ql = queries.length
-        for (let start = 0, count = 0; start < ql; start += chunkSize + 1) {
+        for (let start = 0, count = 0; start < ql; start += chunkSize) {
             const chunkQueries = queries.slice(start, start + chunkSize)
             count += chunkQueries.length
             const completed = count
