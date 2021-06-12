@@ -11,6 +11,7 @@ export const Strings = new LocalizedStrings({
             + ' please save a file first if you wish to keep them.',
         FieldAddButton: 'Add Note Field',
         FieldDefaultTitle: 'Note ',
+        FieldModifyFailed: 'Failed to modify note field',
         FieldTitle: 'Field title:',
         FieldType: 'Field type:',
         FieldTypeBoolean: 'Checkbox',
