@@ -13,7 +13,7 @@ export function saveNoteInput() {
         const values = getDBValues(noteInput, noteFields)
         dbi.updateItemById(viewedItem.id, noteFields, values)
         .then(() => {
-            dispatch(findItemById(''+viewedItem.itemColumnValues[0]))
+            dispatch(findItemById())
         })
         .catch((e) => Alert.alert(
             Strings.Error,

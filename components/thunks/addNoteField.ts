@@ -4,6 +4,7 @@ import { CreateNoteInput } from '../../db/types'
 import { updateFieldEditStatus } from '../shared/actions'
 import { Dispatch, GetState } from '../shared/store'
 import { Strings } from '../../strings/strings'
+import { findItemById } from './findItemById'
 import { getNoteFields } from './getNoteFields'
 
 export function addNoteField(field: CreateNoteInput) {
@@ -17,6 +18,7 @@ export function addNoteField(field: CreateNoteInput) {
         return dbi.createNoteColumns([{ title, type }])
         .then(() => {
             dispatch(getNoteFields())
+            dispatch(findItemById())
             dispatch(updateFieldEditStatus(false))
         })
         .catch((e) => Alert.alert(Strings.Error, e.message))
