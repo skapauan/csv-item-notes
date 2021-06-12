@@ -4,6 +4,7 @@ export const DBConstants = {
     CsvNoteTypeSuffix: '_',
     Items: {
         Table: 'items',
+        TableCopy: 'items_copy',
         Id: 'item_id',
         DataPrefix: 'data_',
         NotePrefix: 'note_',

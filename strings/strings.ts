@@ -4,12 +4,17 @@ import * as Localization from 'expo-localization'
 export const Strings = new LocalizedStrings({
     en: {
         ButtonCancel: 'Cancel',
+        ButtonDelete: 'Delete',
         ButtonSave: 'Save',
         OpenFileButton: 'Choose CSV file',
         OpenFileInstructions:
             'This will replace all your current data and notes in the app, so'
             + ' please save a file first if you wish to keep them.',
         FieldAddButton: 'Add Note Field',
+        FieldDeleteButton: 'Delete this note field',
+        FieldDeleteFailed: 'Failed to delete note field.',
+        FieldDeleteWarn: 'Deleting this field will also delete all notes made'
+            + ' using this field, and cannot be undone.',
         FieldDefaultTitle: 'Note ',
         FieldModifyFailed: 'Failed to modify note field',
         FieldTitle: 'Field title:',

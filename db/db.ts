@@ -370,14 +370,46 @@ export class DB {
         })
     }
 
+    removeNoteColumns(columns: EditNoteInput[]): Promise<void> {
+        const ids: number[] = columns.map((col) => col.id)
+        const remainingCols = this.itemColumns.filter((ic) => {
+            if (typeof ic.id === 'number') {
+                const index = ids.indexOf(ic.id)
+                if (index > -1) {
+                    ids.splice(index, 1)
+                    return false
+                }
+            }
+            return true
+        })
+        const colDecs: string[] = []
+        const colNames: string[] = []
+        remainingCols.forEach((col) => {
+            colDecs.push(`${col.name} ${col.type}`)
+            colNames.push(col.name)
+        })
+        const queries: DBQuery[] = []
+        queries.push(DBQueries.getCreateItems(colDecs, true))
+        queries.push(DBQueries.getInsertItemsCopy(colNames))
+        queries.push(DBQueries.DropItems)
+        queries.push(DBQueries.AlterRenameItemsCopy)
+        columns.forEach(({ id }) => {
+            queries.push(DBQueries.getDeleteItemColById(id))
+        })
+        return this.queryMany(queries, true)
+        .then(() => {
+            this.initStatus = false
+            return this.init()
+        })
+    }
+
     updateItemById(itemId: number, columns: ItemColumn[], values: DBValue[])
     : Promise<void> {
         if (columns.length !== values.length)
             return Promise.reject(new Error(DBErrors.INPUT_ARRAYS_UNEVEN))
         if (columns.length === 0)
             return Promise.resolve()
-        const colNames: string[] = []
-        columns.forEach((col) => colNames.push(col.name))
+        const colNames = columns.map((col) => col.name)
         return this.query({
             text: DBQueries.getUpdateItemById(colNames),
             values: [...values, itemId],

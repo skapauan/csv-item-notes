@@ -1,11 +1,14 @@
 import React from 'react'
-import { Input } from 'react-native-elements'
+import { Alert } from 'react-native'
+import { Button, Input } from 'react-native-elements'
+import { MaterialIcons } from '@expo/vector-icons'
 import { ItemColumn } from '../db/types'
 import { updateFieldEditStatus } from './shared/actions'
 import { StoreContext } from './shared/store'
 import { P } from './shared/textComponents'
 import { Strings } from '../strings/strings'
-import { styles } from './shared/styles'
+import { styles, topIconColor } from './shared/styles'
+import { deleteNoteField } from './thunks/deleteNoteField'
 import { modifyNoteField } from './thunks/modifyNoteField'
 import { OverlayTemplate } from './OverlayTemplate'
 
@@ -17,6 +20,17 @@ export function FieldEditOverlay({ field }: FieldEditOverlayProps) {
 
     const onCancel = () => dispatch(updateFieldEditStatus(false))
     const onSave = () => dispatch(modifyNoteField({...field, title}))
+    const onDelete = () => {
+        Alert.alert('', Strings.FieldDeleteWarn, [{
+            text: Strings.ButtonCancel,
+            style: 'cancel',
+            onPress: () => {},
+        }, {
+            text: Strings.ButtonDelete,
+            style: 'destructive',
+            onPress: () => dispatch(deleteNoteField(field)),
+        }])
+    }
 
     return (
         <OverlayTemplate isVisible={true} onCancel={onCancel} onSave={onSave}>
@@ -25,6 +39,12 @@ export function FieldEditOverlay({ field }: FieldEditOverlayProps) {
                 value={title}
                 onChangeText={setTitle}
                 style={styles.textInput}
+                />
+            <Button
+                title={Strings.FieldDeleteButton}
+                type="clear"
+                icon={<MaterialIcons name="delete" size={28} color={topIconColor} />}
+                onPress={onDelete}
                 />
         </OverlayTemplate>
     )

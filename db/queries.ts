@@ -7,20 +7,37 @@ export const DBQueries = {
         `ALTER TABLE ${DBConstants.Items.Table}
         ADD COLUMN ${columnName} ${columnType};`,
     
-    getCreateItems: (columnDeclarations: string[]) => {
+    getCreateItems: (columnDeclarations: string[], isCopy: boolean = false)
+    : string => {
         const cols = [
             `${DBConstants.Items.Id} INTEGER PRIMARY KEY NOT NULL`,
             ...columnDeclarations
         ]
-        return `CREATE TABLE IF NOT EXISTS
-        ${DBConstants.Items.Table} (${cols.join(',')});`
+        const table = isCopy
+            ? DBConstants.Items.TableCopy
+            : DBConstants.Items.Table
+        return `CREATE TABLE IF NOT EXISTS ${table} (${cols.join(',')});`
     },
+
+    getDeleteItemColById: (id: number): DBQuery => ({
+        text: `DELETE FROM ${DBConstants.ItemCols.Table}
+            WHERE ${DBConstants.ItemCols.Id} = ?;`,
+        values: [id],
+    }),
     
     getInsertItem: (columnNames: string[]): string => {
         const placeholders: string[] = []
         columnNames.forEach(() => placeholders.push('?'))
         return `INSERT INTO ${DBConstants.Items.Table}
         (${columnNames.join(',')}) VALUES (${placeholders.join(',')});`
+    },
+
+    getInsertItemsCopy: (columnNames: string[]): DBQuery => {
+        const colNamesString = columnNames.join(',')
+        return `INSERT INTO ${DBConstants.Items.TableCopy}
+        (${colNamesString})
+        SELECT ${colNamesString}
+        FROM ${DBConstants.Items.Table};`
     },
 
     getSelectTableWithName: (tableName: string) =>
@@ -72,6 +89,10 @@ export const DBQueries = {
         return `UPDATE ${DBConstants.Items.Table} SET ${sets.join(',')}
         WHERE "${DBConstants.Items.Id}" = ?`
     },
+
+    AlterRenameItemsCopy:
+        `ALTER TABLE ${DBConstants.Items.TableCopy}
+        RENAME TO ${DBConstants.Items.Table};`,
 
     CreateItemCols:
         `CREATE TABLE IF NOT EXISTS "${DBConstants.ItemCols.Table}" (
