@@ -11,6 +11,7 @@ import { NoteCheckbox } from './NoteCheckbox'
 import { NoteTextInput } from './NoteTextInput'
 
 export function NotesSheet() {
+    const navigation = useNavigation()
     const { getState } = React.useContext(StoreContext)
     const { noteFields } = getState()
     const [ sheetVisible, setSheetVisible ] = React.useState(false)
@@ -32,7 +33,6 @@ export function NotesSheet() {
         }
     })
     if (content.length < 1) {
-        const navigation = useNavigation()
         let fieldsButton
         if (navigation) {
             const goFields = () => navigation.navigate(Strings.ScreenNameFields)
