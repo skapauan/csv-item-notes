@@ -30,6 +30,11 @@ export const Strings = new LocalizedStrings({
             'The first column must contain unique ID numbers for each item.',
         FileRequirement3:
             'There must be at least one row of data.',
+        FileSavedError: 'File disappeared. Please save file again.',
+        FileShareButton: 'Share file',
+        FileShareDialogTitle: 'Share CSV file',
+        FileShareError: 'Sharing is not available on your device.',
+        FileViewButton: 'View file',
         Error: 'Error',
         ErrorInvalidNumberRows:
             'Invalid CSV: At least one row of data is required, not including'
@@ -56,6 +61,7 @@ export const Strings = new LocalizedStrings({
         ScreenNameSave: 'Save As File',
         ScreenNameOpen: 'Open File',
         ScreenNameSettings: 'Settings',
+        SaveScreenInstructions: 'Save data and notes as a new CSV file:',
         ViewScreenInstructions: 'Enter an item ID above to view its info.',
     }
 })

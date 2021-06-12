@@ -6,6 +6,7 @@ import { FormValue } from '../../forms/forms'
 export const ActionTypes = {
     UpdateDataStatus: 'UpdateDataStatus',
     UpdateFieldEditStatus: 'UpdateFieldEditStatus',
+    UpdateFileSaved: 'UpdateFileSaved',
     UpdateNoteFields: 'UpdateNoteFields',
     UpdateNoteInput: 'UpdateNoteInput',
     UpdateOpenFileProgress: 'UpdateOpenFileProgress',
@@ -22,6 +23,11 @@ export const updateDataStatus = (payload: number) => ({
 
 export const updateFieldEditStatus = (payload: ItemColumn | boolean) => ({
     type: ActionTypes.UpdateFieldEditStatus,
+    payload,
+})
+
+export const updateFileSaved = (payload: boolean) => ({
+    type: ActionTypes.UpdateFileSaved,
     payload,
 })
 

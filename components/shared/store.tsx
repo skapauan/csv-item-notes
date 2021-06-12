@@ -14,6 +14,7 @@ export type GetState = () => State
 export interface State {
     dataStatus: number;
     fieldEditStatus: ItemColumn | boolean;
+    fileSaved: boolean;
     noteFields: ItemColumn[];
     noteInput: FormValue[];
     openFileProgress: number;
@@ -23,6 +24,7 @@ export interface State {
 const initialState: State = {
     dataStatus: -1,
     fieldEditStatus: false,
+    fileSaved: false,
     noteFields: [],
     noteInput: [],
     openFileProgress: -1,
@@ -38,6 +40,8 @@ export const StoreProvider = (props: StoreProviderProps) => {
                     return {...state, dataStatus: action.payload}
                 case ActionTypes.UpdateFieldEditStatus:
                     return {...state, fieldEditStatus: action.payload}
+                case ActionTypes.UpdateFileSaved:
+                    return {...state, fileSaved: action.payload}
                 case ActionTypes.UpdateNoteFields:
                     return {...state, noteFields: action.payload}
                 case ActionTypes.UpdateNoteInput:

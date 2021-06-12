@@ -1,9 +1,11 @@
 import * as DocumentPicker from 'expo-document-picker'
 import * as FileSystem from 'expo-file-system'
 import Papa from 'papaparse'
-import { updateDataStatus, updateOpenFileProgress, updateViewedError, updateViewedItem } from '../shared/actions'
+import { updateDataStatus, updateOpenFileProgress, updateViewedError,
+    updateViewedItem } from '../shared/actions'
 import { Dispatch, GetState } from '../shared/store'
 import { dbi } from '../../db/dbInstance'
+import { FSConstants } from '../../fs/constants'
 import { getItemDataErrorMessage } from '../../strings/dberrors'
 import { Strings } from '../../strings/strings'
 import { getNoteFields } from './getNoteFields'
@@ -22,7 +24,7 @@ export function openFile(
         // Prompt user to choose CSV file
         try {
             document = await DocumentPicker.getDocumentAsync({
-                type: 'text/comma-separated-values',
+                type: FSConstants.CsvMimeType,
             })
         } catch (e) {
             showError(e.message)
