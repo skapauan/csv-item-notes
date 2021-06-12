@@ -1,9 +1,11 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
 import { Button, Icon } from 'react-native-elements'
+import { useNavigation } from '@react-navigation/core'
 import { ColumnType } from '../db/types'
 import { StoreContext } from './shared/store'
 import { styles, topIconColor } from './shared/styles'
+import { P } from './shared/textComponents'
 import { Strings } from '../strings/strings'
 import { NoteCheckbox } from './NoteCheckbox'
 import { NoteTextInput } from './NoteTextInput'
@@ -29,6 +31,22 @@ export function NotesSheet() {
             content.push( <NoteTextInput {...props} /> )
         }
     })
+    if (content.length < 1) {
+        const navigation = useNavigation()
+        let fieldsButton
+        if (navigation) {
+            const goFields = () => navigation.navigate(Strings.ScreenNameFields)
+            fieldsButton = (
+                <Button title={Strings.ScreenNameFields} onPress={goFields} />
+            )
+        }
+        content.push(
+            <View key={-1}>
+                <P>{Strings.NoNoteFields}</P>
+                {fieldsButton}
+            </View>
+        )
+    }
 
     const iconName = sheetVisible ? 'keyboard-arrow-down' : 'keyboard-arrow-up'
 
