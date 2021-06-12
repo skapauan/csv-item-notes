@@ -3,13 +3,9 @@ import { colors } from 'react-native-elements'
 import Constants from 'expo-constants'
 import tinycolor from 'tinycolor2'
 
-const themePrimary = tinycolor(colors.primary).toRgbString()
-const themeBg = tinycolor(colors.primary).setAlpha(0.2).toRgbString()
-
+const textInputPadding = 12
 const titleFontSize = 24
 const topBarHeight = 50
-const topBarBackground = themeBg
-const bodyBackground = 'white'
 const bodyFontSize = 20
 const bodyPadTop = 8
 const bodyPadBottom = 20
@@ -17,9 +13,13 @@ const bodyPadHorizontal = 18
 const bodyTextMarginVertical = 6
 const bodyTextIndent = 15
 
-export const bodyColorRegular = '#333333'
-export const bodyColorHeader = '#333333'
-export const topColor = '#333333'
+const themePrimary = tinycolor(colors.primary).toRgbString()
+const themeBg = tinycolor(colors.primary).setAlpha(0.2).toRgbString()
+const bodyBackground = 'white'
+const bodyColorRegular = colors.grey0
+const bodyColorHeader = colors.grey0
+const topBackground = themeBg
+const topColor = colors.grey0
 export const topIconColor = themePrimary
 
 export const styles = StyleSheet.create({
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     },
     topBar: {
         flexDirection: 'row',
-        backgroundColor: topBarBackground,
+        backgroundColor: topBackground,
         height: topBarHeight,
     },
     topSearch: {
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     topSearchInput: {
         flex: 1,
         height: 50,
-        paddingHorizontal: 12,
+        paddingHorizontal: textInputPadding,
         fontSize: titleFontSize,
     },
     topSearchButton: {
