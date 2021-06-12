@@ -32,8 +32,7 @@ export const DBQueries = {
         "${tableName.replace(/"/g, '""')}") THEN 0 ELSE 1 END AS isempty;`,
 
     getSelectItemsWithColumnValue: (columnName: string,
-        selectColumnNames?: string[], limitOne?: boolean) => 
-    {
+    selectColumnNames?: string[], limitOne?: boolean): string => {
         let cols = '*'
         if (selectColumnNames) {
             cols = selectColumnNames.join(',')
@@ -65,7 +64,7 @@ export const DBQueries = {
         }
     },
 
-    getUpdateItemNotes: (columnNames: string[]): string => {
+    getUpdateItemById: (columnNames: string[]): string => {
         const sets: string[] = []
         columnNames.forEach((columnName) => {
             sets.push(`"${columnName.replace(/"/g, '""')}" = ?`)

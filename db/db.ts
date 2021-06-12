@@ -5,9 +5,9 @@ import { DBErrors } from './errors'
 import { getDataColName, getLastColNumber, getLastOrder, getNoteColName }
     from './names'
 import { DBQueries } from './queries'
-import { getItemColumnValues } from './results'
+import { getItemOutputs } from './results'
 import { ColumnType, ColumnTypes, CreateNoteInput, DBQuery, DBValue,
-    EditNoteInput, ItemColsRow, ItemColumn, ItemDataInput, NotesInput }
+    EditNoteInput, ItemColsRow, ItemColumn, ItemDataInput, ItemOutput }
     from './types'
 
 export class DB {
@@ -16,8 +16,8 @@ export class DB {
     itemColumns: ItemColumn[]
     savedQueries = {
         firstDataColumnName: '',
-        itemColumnNames: [] as string[],
-        selectItemByFirstDataValue: '',
+        allColumnNames: [] as string[],
+        selectItemByFirstValue: '',
     }
 
     constructor() {
@@ -34,9 +34,10 @@ export class DB {
                 col.name.startsWith(DBConstants.Items.DataPrefix))
         }
         q.firstDataColumnName = firstDataCol ? firstDataCol.name : DBConstants.Items.Id
-        q.itemColumnNames = this.itemColumns.map((col) => col.name)
-        q.selectItemByFirstDataValue = DBQueries.getSelectItemsWithColumnValue(
-            q.firstDataColumnName, q.itemColumnNames, true
+        q.allColumnNames = this.itemColumns.map((col) => col.name)
+        q.allColumnNames.push(DBConstants.Items.Id)
+        q.selectItemByFirstValue = DBQueries.getSelectItemsWithColumnValue(
+            q.firstDataColumnName, q.allColumnNames, true
         )
     }
 
@@ -185,10 +186,15 @@ export class DB {
             }
             // Populate DB.itemColumns from Items table_info and ItemCols rows
             this.itemColumns = []
+            let index = 0
             const info = await this.query(DBQueries.SelectItemsTableInfo)
             for (let i = 0, row; !!(row = info.rows.item(i)); i++) {
                 if (row.name === DBConstants.Items.Id) continue
-                this.itemColumns.push({ index: i, name: row.name, type: row.type })
+                this.itemColumns.push({
+                    index: index++,
+                    name: row.name,
+                    type: row.type,
+                })
             }
             if (await this.hasTable(DBConstants.ItemCols.Table)) {
                 const result = await this.query(DBQueries.SelectAllItemCols)
@@ -312,23 +318,23 @@ export class DB {
         })
     }
 
-    findItemsByColumnValue(columnName: string, columnValue: DBValue, limitOne?: boolean
-    , transaction?: SQLTransaction): Promise<DBValue[][]> {
+    findItemsByColumnValue(columnName: string, columnValue: DBValue,
+    limitOne?: boolean, transaction?: SQLTransaction): Promise<ItemOutput[]> {
         return this.query({
             text: DBQueries.getSelectItemsWithColumnValue(
-                columnName, this.savedQueries.itemColumnNames, limitOne),
+                columnName, this.savedQueries.allColumnNames, limitOne),
             values: [columnValue],
         }, transaction)
-        .then((result) => getItemColumnValues(result, this.itemColumns))
+        .then((result) => getItemOutputs(result, this.itemColumns))
     }
 
-    findItemByFirstDataValue(value: DBValue, transaction?: SQLTransaction)
-    : Promise<DBValue[] | undefined> {
+    findItemByFirstValue(columnValue: DBValue, transaction?: SQLTransaction)
+    : Promise<ItemOutput | undefined> {
         return this.query({
-            text: this.savedQueries.selectItemByFirstDataValue,
-            values: [value],
+            text: this.savedQueries.selectItemByFirstValue,
+            values: [columnValue],
         }, transaction)
-        .then((result) => getItemColumnValues(result, this.itemColumns)[0])
+        .then((result) => getItemOutputs(result, this.itemColumns)[0])
     }
 
     createNoteColumns(columns: CreateNoteInput[]): Promise<void> {
@@ -364,18 +370,17 @@ export class DB {
         })
     }
 
-    updateItemNotes(itemId: number, notes: NotesInput, transaction?: SQLTransaction)
+    updateItemById(itemId: number, columns: ItemColumn[], values: DBValue[])
     : Promise<void> {
+        if (columns.length !== values.length)
+            return Promise.reject(new Error(DBErrors.INPUT_ARRAYS_UNEVEN))
+        if (columns.length === 0)
+            return Promise.resolve()
         const colNames: string[] = []
-        const values: DBValue[] = []
-        notes.forEach((note) => {
-            colNames.push(note.colName)
-            values.push(note.value)
-        })
-        values.push(itemId)
+        columns.forEach((col) => colNames.push(col.name))
         return this.query({
-            text: DBQueries.getUpdateItemNotes(colNames),
-            values,
+            text: DBQueries.getUpdateItemById(colNames),
+            values: [...values, itemId],
         }).then(() => {})
     }
 

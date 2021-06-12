@@ -80,6 +80,9 @@ export const styles = StyleSheet.create({
         paddingTop: bodyPadTop,
         paddingBottom: bodyPadBottom,
     },
+    bodyFont: {
+        fontSize: bodyFontSize,
+    },
     p: {
         marginVertical: bodyTextMarginVertical,
         fontSize: bodyFontSize,
@@ -94,6 +97,9 @@ export const styles = StyleSheet.create({
     dd: {
         fontSize: bodyFontSize,
         color: bodyColorRegular,
+    },
+    notesSheet: {
+        backgroundColor: themeBg,
     },
     li_outer: {
         flexDirection: 'row',

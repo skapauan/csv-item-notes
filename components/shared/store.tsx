@@ -3,26 +3,28 @@
 
 import React from 'react'
 import useThunkReducer, { Thunk } from 'react-hook-thunk-reducer'
+import { ItemColumn, ItemOutput } from '../../db/types'
 import { ActionTypes } from './actions'
-import { DBValue, ItemColumn } from '../../db/types'
+import { FormValue, getFormValue } from '../../forms/forms'
 
 export interface Action { type: string; payload: any; }
 export interface StoreProviderProps { children: any; }
-export type Item = DBValue[]
 export type Dispatch = React.Dispatch<Action | Thunk<State, Action>>
 export type GetState = () => State
 export interface State {
     dataStatus: number;
     fieldEditStatus: ItemColumn | boolean;
     noteFields: ItemColumn[];
+    noteInput: FormValue[];
     openFileProgress: number;
-    viewedItem: Item | undefined;
+    viewedItem: ItemOutput | undefined;
     viewedError: string;
 }
 const initialState: State = {
     dataStatus: -1,
     fieldEditStatus: false,
     noteFields: [],
+    noteInput: [],
     openFileProgress: -1,
     viewedItem: undefined,
     viewedError: '',
@@ -38,10 +40,21 @@ export const StoreProvider = (props: StoreProviderProps) => {
                     return {...state, fieldEditStatus: action.payload}
                 case ActionTypes.UpdateNoteFields:
                     return {...state, noteFields: action.payload}
+                case ActionTypes.UpdateNoteInput:
+                    return {...state, noteInput: action.payload}
                 case ActionTypes.UpdateOpenFileProgress:
                     return {...state, openFileProgress: action.payload}
                 case ActionTypes.UpdateViewedItem:
-                    return {...state, viewedItem: action.payload}
+                    const viewedItem = action.payload as ItemOutput
+                    if (viewedItem) {
+                        const { noteFields } = state
+                        const noteInput = noteFields.map(
+                            ({ index, type }) => getFormValue(
+                                viewedItem.itemColumnValues[index], type)
+                        )
+                        return {...state, noteInput, viewedItem }
+                    }
+                    return {...state, viewedItem }
                 case ActionTypes.UpdateViewedError:
                     return {...state, viewedError: action.payload}
                 default:

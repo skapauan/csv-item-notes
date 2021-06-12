@@ -1,5 +1,5 @@
-import { ItemColumn } from '../../db/types'
-import { Item } from './store'
+import { ItemColumn, ItemOutput } from '../../db/types'
+import { FormValue } from '../../forms/forms'
 
 // Action types
 
@@ -7,6 +7,7 @@ export const ActionTypes = {
     UpdateDataStatus: 'UpdateDataStatus',
     UpdateFieldEditStatus: 'UpdateFieldEditStatus',
     UpdateNoteFields: 'UpdateNoteFields',
+    UpdateNoteInput: 'UpdateNoteInput',
     UpdateOpenFileProgress: 'UpdateOpenFileProgress',
     UpdateViewedItem: 'UpdateViewedItem',
     UpdateViewedError: 'UpdateViewedError',
@@ -29,12 +30,17 @@ export const updateNoteFields = (payload: ItemColumn[]) => ({
     payload,
 })
 
+export const updateNoteInput = (payload: FormValue[]) => ({
+    type: ActionTypes.UpdateNoteInput,
+    payload,
+})
+
 export const updateOpenFileProgress = (payload: number) => ({
     type: ActionTypes.UpdateOpenFileProgress,
     payload,
 })
 
-export const updateViewedItem = (payload: Item | undefined) => ({
+export const updateViewedItem = (payload: ItemOutput | undefined) => ({
     type: ActionTypes.UpdateViewedItem,
     payload,
 })

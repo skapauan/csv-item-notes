@@ -41,6 +41,7 @@ export const Strings = new LocalizedStrings({
         LoadFileInfo: 'File name: %\r\nFile size: % bytes\r\nNumber of rows: %\r\nTime to load: % seconds',
         LoadFileError: 'Error loading file',
         Loading: 'Loading...',
+        Notes: 'Notes',
         NothingHere: 'Nothing here yet!',
         ScreenNameView: 'View Current Data',
         ScreenNameFields: 'Configure Note Fields',
