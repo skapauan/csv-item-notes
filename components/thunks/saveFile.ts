@@ -7,9 +7,9 @@ import { Strings } from '../../strings/strings'
 import { updateFileSaved } from '../shared/actions'
 import { Dispatch, GetState } from '../shared/store'
 
-export function saveFile() {
+export function saveFile(itemsWithNotesOnly: boolean = false) {
     return (dispatch: Dispatch, getState: GetState) => {
-        dbi.getDataFromItems()
+        dbi.getDataFromItems(itemsWithNotesOnly)
         .then((csvData) => {
             const csvString = Papa.unparse(csvData)
             return FileSystem.writeAsStringAsync(FSConstants.OutputFile, csvString)

@@ -40,10 +40,18 @@ export const DBQueries = {
         FROM ${DBConstants.Items.Table};`
     },
 
-    getSelectAllItems: (selectColumnNames?: string[]): DBQuery => {
+    getSelectAllItems: (selectColumnNames?: string[],
+    notNullColNames?: string[]) : DBQuery => {
         let cols = '*'
         if (selectColumnNames && selectColumnNames.length > 0) {
             cols = selectColumnNames.join(',')
+        }
+        if (notNullColNames && notNullColNames.length > 0) {
+            const conditions = notNullColNames
+                .map(name => `${name} IS NOT NULL`)
+                .join(' OR ')
+            return `SELECT ${cols} FROM ${DBConstants.Items.Table}
+            WHERE ${conditions};`
         }
         return `SELECT ${cols} FROM ${DBConstants.Items.Table};`
     },

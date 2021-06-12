@@ -17,6 +17,7 @@ export class DB {
     savedQueries = {
         firstDataColumnName: '',
         allColumnNames: [] as string[],
+        noteColumnNames: [] as string[],
         selectItemByFirstValue: '',
     }
 
@@ -36,6 +37,7 @@ export class DB {
         q.firstDataColumnName = firstDataCol ? firstDataCol.name : DBConstants.Items.Id
         q.allColumnNames = this.itemColumns.map((col) => col.name)
         q.allColumnNames.push(DBConstants.Items.Id)
+        q.noteColumnNames = this.itemColumns.filter(col => col.isNote).map(col => col.name)
         q.selectItemByFirstValue = DBQueries.getSelectItemsWithColumnValue(
             q.firstDataColumnName, q.allColumnNames, true
         )
@@ -318,9 +320,12 @@ export class DB {
         })
     }
 
-    getDataFromItems(): Promise<DBValue[][]> {
+    getDataFromItems(withNotesOnly: boolean = false): Promise<DBValue[][]> {
+        const notNullCols = withNotesOnly
+            ? this.savedQueries.noteColumnNames : undefined
         return this.query(
-            DBQueries.getSelectAllItems(this.savedQueries.allColumnNames))
+            DBQueries.getSelectAllItems(
+                this.savedQueries.allColumnNames, notNullCols))
         .then((result) => {
             const outputs = getItemOutputs(result, this.itemColumns)
             const headerRow = this.itemColumns.map(

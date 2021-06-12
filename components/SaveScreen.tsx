@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
-import { useNavigation, useNavigationState } from '@react-navigation/native'
+import { CheckBox } from 'react-native-elements'
+import { useNavigationState } from '@react-navigation/native'
 import { TopBar } from './TopBar'
 import { StoreContext } from './shared/store'
 import { styles } from './shared/styles'
@@ -14,7 +15,7 @@ import { updateFileSaved } from './shared/actions'
 export function SaveScreen() {
     const { dispatch, getState } = React.useContext(StoreContext)
     const { fileSaved } = getState()
-    const navigation = useNavigation()
+    const [ withNotes, setWithNotes ] = React.useState(false)
 
     // Forget any saved file when user navigates away from this screen
     const currentIndex = useNavigationState(state => state.index)
@@ -24,13 +25,23 @@ export function SaveScreen() {
         dispatch(updateFileSaved(false))
     }, [currentIndex === saveScreenIndex])
 
+    const toggleCheckbox = () => {
+        setWithNotes(!withNotes)
+        dispatch(updateFileSaved(false))
+    }
+
     return (
         <View style={styles.outerView}>
             <TopBar title={Strings.ScreenNameSave} />
             <ScrollView style={styles.bodyScrollOuter}
                     contentContainerStyle={styles.bodyScrollInner}>
                 <P>{Strings.SaveScreenInstructions}</P>
-                <SaveFileButton navigation={navigation} />
+                <CheckBox
+                    title={Strings.SaveItemsHavingNotes}
+                    checked={withNotes}
+                    onPress={toggleCheckbox}
+                    />
+                <SaveFileButton itemsWithNotesOnly={withNotes} />
                 { fileSaved &&
                 <View style={{flexDirection: 'row', paddingTop: 15}}>
                     <View style={{flex: 1, marginRight: 10}}>

@@ -4,12 +4,12 @@ import { Strings } from '../strings/strings'
 import { StoreContext } from './shared/store'
 import { saveFile } from './thunks/saveFile'
 
-export interface SaveFileButtonProps { navigation?: any; }
+export interface SaveFileButtonProps { itemsWithNotesOnly?: boolean; }
 
-export function SaveFileButton({ navigation }: SaveFileButtonProps) {
+export function SaveFileButton({ itemsWithNotesOnly }: SaveFileButtonProps) {
     const { dispatch, getState } = React.useContext(StoreContext)
     const buttonType = getState().fileSaved ? 'outline' : 'solid'
-    const onPress = () => dispatch(saveFile())
+    const onPress = () => dispatch(saveFile(itemsWithNotesOnly))
 
     return <Button title={Strings.ButtonSave} onPress={onPress} type={buttonType} />
 }

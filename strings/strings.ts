@@ -61,6 +61,7 @@ export const Strings = new LocalizedStrings({
         ScreenNameSave: 'Save As File',
         ScreenNameOpen: 'Open File',
         ScreenNameSettings: 'Settings',
+        SaveItemsHavingNotes: 'Only items having notes',
         SaveScreenInstructions: 'Save data and notes as a new CSV file:',
         ViewScreenInstructions: 'Enter an item ID above to view its info.',
     }
