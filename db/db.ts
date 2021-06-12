@@ -5,7 +5,7 @@ import { DBErrors } from './errors'
 import { getDataColName, getLastColNumber, getLastOrder, getNoteColName }
     from './names'
 import { DBQueries } from './queries'
-import { getItemOutputs } from './results'
+import { getItemOutputs, isTruthyValue } from './results'
 import { ColumnType, ColumnTypes, CreateNoteInput, DBQuery, DBValue,
     EditNoteInput, ItemColsRow, ItemColumn, ItemDataInput, ItemOutput }
     from './types'
@@ -297,7 +297,7 @@ export class DB {
                 const col = columns[j]
                 if (col.isNote) {
                     if (col.type === ColumnTypes.Boolean) {
-                        value = (value === '1') ? 1 : null
+                        value = isTruthyValue(value)
                     } else {
                         value = (value.length > 0) ? value : null
                     }
@@ -315,6 +315,23 @@ export class DB {
         .then(() => {
             this.initStatus = false
             return this.init()
+        })
+    }
+
+    getDataFromItems(): Promise<DBValue[][]> {
+        return this.query(
+            DBQueries.getSelectAllItems(this.savedQueries.allColumnNames))
+        .then((result) => {
+            const outputs = getItemOutputs(result, this.itemColumns)
+            const headerRow = this.itemColumns.map(
+                ({ isNote, name, title, type }) => {
+                    if (!title) return name
+                    if (!isNote) return title
+                    return DBConstants.CsvNotePrefix + type
+                        + DBConstants.CsvNoteTypeSuffix + title
+                })
+            const itemRows = outputs.map(output => output.itemColumnValues)
+            return [headerRow, ...itemRows]
         })
     }
 

@@ -40,6 +40,14 @@ export const DBQueries = {
         FROM ${DBConstants.Items.Table};`
     },
 
+    getSelectAllItems: (selectColumnNames?: string[]): DBQuery => {
+        let cols = '*'
+        if (selectColumnNames && selectColumnNames.length > 0) {
+            cols = selectColumnNames.join(',')
+        }
+        return `SELECT ${cols} FROM ${DBConstants.Items.Table};`
+    },
+
     getSelectTableWithName: (tableName: string) =>
         `SELECT name FROM sqlite_master WHERE type='table'
         AND name='${tableName.replace(/'/g, "''")}';`,
@@ -51,7 +59,7 @@ export const DBQueries = {
     getSelectItemsWithColumnValue: (columnName: string,
     selectColumnNames?: string[], limitOne?: boolean): string => {
         let cols = '*'
-        if (selectColumnNames) {
+        if (selectColumnNames && selectColumnNames.length > 0) {
             cols = selectColumnNames.join(',')
         }
         return `SELECT ${cols} FROM ${DBConstants.Items.Table}

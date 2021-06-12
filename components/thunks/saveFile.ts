@@ -1,16 +1,23 @@
 import * as FileSystem from 'expo-file-system'
-import * as IntentLauncher from 'expo-intent-launcher'
 import Papa from 'papaparse'
+import { Alert } from 'react-native'
+import { dbi } from '../../db/dbInstance'
 import { FSConstants } from '../../fs/constants'
+import { Strings } from '../../strings/strings'
 import { updateFileSaved } from '../shared/actions'
 import { Dispatch, GetState } from '../shared/store'
 
 export function saveFile() {
     return (dispatch: Dispatch, getState: GetState) => {
-        //TODO get rows of DB, process into required data format, and unparse into CSV string
-        const contents = 'A,B,C\r\n1,2,3\r\nabc,123,you and me'
-        console.log(FSConstants.OutputFile)
-        FileSystem.writeAsStringAsync(FSConstants.OutputFile, contents)
+        dbi.getDataFromItems()
+        .then((csvData) => {
+            const csvString = Papa.unparse(csvData)
+            return FileSystem.writeAsStringAsync(FSConstants.OutputFile, csvString)
+        })
         .then(() => dispatch(updateFileSaved(true)))
+        .catch((e) => {
+            Alert.alert(Strings.Error, Strings.ItemUnexpectedError)
+            dispatch(updateFileSaved(false))
+        })
     }
 }

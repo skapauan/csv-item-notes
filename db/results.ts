@@ -20,3 +20,13 @@ export function getItemOutputs(
     }
     return output
 }
+
+export function isTruthyValue(value: any): boolean {
+    if (typeof value === 'string') {
+        const str = value.trim().toLowerCase()
+        if (!str) return false
+        if (str === 'false' || str === '0' || str === 'no') return false
+        return true
+    }
+    return !!value
+}

@@ -8,12 +8,16 @@ import { getNoteFields } from './getNoteFields'
 
 export function modifyNoteField(field: ItemColumn) {
     return (dispatch: Dispatch, getState: GetState) => {
-        const { id } = field
+        let { id, title } = field
         if (typeof id !== 'number') {
             Alert.alert(Strings.Error, Strings.FieldModifyFailed)
             return
         }
-        return dbi.updateNoteColumns([{...field, id }])
+        if (!title) {
+            const { noteFields } = getState()
+            title = Strings.FieldDefaultTitle + (noteFields.length + 1)
+        }
+        return dbi.updateNoteColumns([{...field, id, title }])
         .then(() => {
             dispatch(getNoteFields())
             dispatch(updateFieldEditStatus(false))
