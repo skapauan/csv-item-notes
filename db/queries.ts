@@ -119,6 +119,10 @@ export const DBQueries = {
         ${DBConstants.ItemCols.Title}, ${DBConstants.ItemCols.IsNote},
         ${DBConstants.ItemCols.Order} FROM "${DBConstants.ItemCols.Table}";`,
 
+    SelectCountItemCols: 'SELECT COUNT(1) AS count FROM item_cols;',
+
+    SelectCountItems: 'SELECT COUNT(1) AS count FROM items;',
+
     SelectItemsTableInfo:
         `SELECT name, type FROM PRAGMA_TABLE_INFO("${DBConstants.Items.Table}");`,
 

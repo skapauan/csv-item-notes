@@ -6,6 +6,7 @@ export const Strings = new LocalizedStrings({
         ButtonCancel: 'Cancel',
         ButtonDelete: 'Delete',
         ButtonSave: 'Save',
+        DiagnosticInfo: 'Diagnostic Information',
         OpenFileButton: 'Choose CSV file',
         OpenFileInstructions:
             'This will replace all your current data and notes in the app, so'
@@ -49,7 +50,7 @@ export const Strings = new LocalizedStrings({
         Loading: 'Loading...',
         Notes: 'Notes',
         NothingHere: 'Nothing here yet!',
-        ScreenNameView: 'View Current Data',
+        ScreenNameView: 'View Items Data',
         ScreenNameFields: 'Configure Note Fields',
         ScreenNameSave: 'Save As File',
         ScreenNameOpen: 'Open File',
