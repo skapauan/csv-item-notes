@@ -16,8 +16,9 @@ export type FileInfo = {
     rows: number;
 }
 export function openFile(
-    showError: (errorMessage: string) => void,
-    success: (fileInfo: FileInfo) => void
+    success: (fileInfo: FileInfo) => void,
+    showCancel: (message: string) => void,
+    showError: (message: string) => void
 ) {
     return async (dispatch: Dispatch, getState: GetState) => {
         let document, csvString, csvData
@@ -31,7 +32,7 @@ export function openFile(
             return
         }
         if (document.type !== 'success') {
-            showError(Strings.LoadFileCanceled)
+            showCancel(Strings.LoadFileCanceled)
             return
         }
         // Show loading screen
