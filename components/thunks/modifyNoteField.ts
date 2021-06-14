@@ -15,7 +15,7 @@ export function modifyNoteField(field: ItemColumn) {
         }
         if (!title) {
             const { noteFields } = getState()
-            title = Strings.FieldDefaultTitle + (noteFields.length + 1)
+            title = Strings.FieldDefaultTitle + noteFields.length
         }
         return dbi.updateNoteColumns([{...field, id, title }])
         .then(() => {
