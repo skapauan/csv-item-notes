@@ -1,6 +1,7 @@
 import React from 'react'
 import { Alert, ToastAndroid } from 'react-native'
 import { Button } from 'react-native-elements'
+import { dbi } from '../db/dbInstance'
 import { FileInfo, openFile } from './thunks/openFile'
 import { Strings } from '../strings/strings'
 import { StoreContext } from './shared/store'
@@ -32,7 +33,22 @@ export function OpenFileButton({ navigation }: OpenFileButtonProps) {
         }
     }
 
-    const onPress = () => dispatch(openFile(success, showCancel, showError))
+    const fileOpen = () => dispatch(openFile(success, showCancel, showError))
+    let onPress
+    if (dbi.isInit()) {
+        onPress = () => {
+            Alert.alert(Strings.Warning, Strings.OpenFileWarn, [{
+                text: Strings.ButtonCancel,
+                style: 'cancel',
+            }, {
+                text: Strings.ButtonContinue,
+                style: 'destructive',
+                onPress: fileOpen,
+            }])
+        }
+    } else {
+        onPress = fileOpen
+    }
 
     return <Button title={Strings.OpenFileButton} onPress={onPress} />
 }

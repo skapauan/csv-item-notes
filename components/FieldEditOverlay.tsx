@@ -21,10 +21,9 @@ export function FieldEditOverlay({ field }: FieldEditOverlayProps) {
     const onCancel = () => dispatch(updateFieldEditStatus(false))
     const onSave = () => dispatch(modifyNoteField({...field, title}))
     const onDelete = () => {
-        Alert.alert('', Strings.FieldDeleteWarn, [{
+        Alert.alert(Strings.Warning, Strings.FieldDeleteWarn, [{
             text: Strings.ButtonCancel,
             style: 'cancel',
-            onPress: () => {},
         }, {
             text: Strings.ButtonDelete,
             style: 'destructive',

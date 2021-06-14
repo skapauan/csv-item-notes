@@ -4,13 +4,10 @@ import * as Localization from 'expo-localization'
 export const Strings = new LocalizedStrings({
     en: {
         ButtonCancel: 'Cancel',
+        ButtonContinue: 'Continue',
         ButtonDelete: 'Delete',
         ButtonSave: 'Save',
         DiagnosticInfo: 'Diagnostic Information',
-        OpenFileButton: 'Choose CSV file',
-        OpenFileInstructions:
-            'This will replace all your current data and notes in the app, so'
-            + ' please save a file first if you wish to keep them.',
         FieldAddButton: 'Add Note Field',
         FieldDeleteButton: 'Delete this note field',
         FieldDeleteFailed: 'Failed to delete note field.',
@@ -50,12 +47,18 @@ export const Strings = new LocalizedStrings({
         ItemUnexpectedError: 'Unexpected database error. Please restart app.',
         LoadFileCanceled: 'File selection was canceled',
         LoadFileDone: 'Done loading data from file',
-        LoadFileInfo: 'File name: %\r\nFile size: % bytes\r\nNumber of rows: %\r\nTime to load: % seconds',
+        LoadFileInfo: 'File name: %\r\nFile size: % bytes\r\nNumber of rows: %'
+            + '\r\nTime to load: % seconds',
         LoadFileError: 'Error loading file',
         Loading: 'Loading...',
         NoNoteFields: 'There are no note fields yet.',
         Notes: 'Notes',
-        NothingHere: 'Nothing here yet!',
+        OpenFileButton: 'Choose CSV file',
+        OpenFileInstructions:
+            'This will replace all your current data and notes in the app, so'
+            + ' please save a file first if you wish to keep them.',
+        OpenFileWarn: 'This will delete all current data and notes, and'
+            + ' cannot be undone.',
         ScreenNameView: 'View Items Data',
         ScreenNameFields: 'Configure Note Fields',
         ScreenNameSave: 'Save As File',
@@ -64,6 +67,7 @@ export const Strings = new LocalizedStrings({
         SaveItemsHavingNotes: 'Only items having notes',
         SaveScreenInstructions: 'Save data and notes as a new CSV file:',
         ViewScreenInstructions: 'Enter an item ID above to view its info.',
+        Warning: 'Warning',
     }
 })
 Strings.setLanguage(Localization.locale)
