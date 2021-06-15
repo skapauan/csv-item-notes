@@ -25,7 +25,8 @@ export function SaveScreen() {
         dispatch(updateFileSaved(false))
     }, [currentIndex === saveScreenIndex])
 
-    const toggleCheckbox = () => {
+    const updateWithNotes = (value: boolean) => {
+        if (value === withNotes) return
         setWithNotes(!withNotes)
         dispatch(updateFileSaved(false))
     }
@@ -37,13 +38,24 @@ export function SaveScreen() {
                     contentContainerStyle={styles.bodyScrollInner}>
                 <P>{Strings.SaveScreenInstructions}</P>
                 <CheckBox
+                    title={Strings.SaveItemsAll}
+                    checked={!withNotes}
+                    onPress={() => updateWithNotes(false)}
+                    checkedIcon='dot-circle-o'
+                    uncheckedIcon='circle-o'
+                    />
+                <CheckBox
                     title={Strings.SaveItemsHavingNotes}
                     checked={withNotes}
-                    onPress={toggleCheckbox}
+                    onPress={() => updateWithNotes(true)}
+                    checkedIcon='dot-circle-o'
+                    uncheckedIcon='circle-o'
                     />
-                <SaveFileButton itemsWithNotesOnly={withNotes} />
+                <View style={{ marginVertical: 15 }}>
+                    <SaveFileButton itemsWithNotesOnly={withNotes} />
+                </View>
                 { fileSaved &&
-                <View style={{flexDirection: 'row', paddingTop: 15}}>
+                <View style={{flexDirection: 'row' }}>
                     <View style={{flex: 1, marginRight: 10}}>
                         <FileViewButton />
                     </View>

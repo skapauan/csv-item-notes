@@ -64,10 +64,11 @@ export const Strings = new LocalizedStrings({
         ScreenNameSave: 'Save As File',
         ScreenNameOpen: 'Open File',
         ScreenNameSettings: 'Settings',
+        SaveItemsAll: 'All items',
         SaveItemsHavingNotes: 'Only items having notes',
         SaveThereAreNoNotes: 'There are no items with notes, so the CSV file'
             + ' will have no items.',
-        SaveScreenInstructions: 'Save data and notes as a new CSV file:',
+        SaveScreenInstructions: 'Save a new CSV file with:',
         ViewScreenInstructions: 'Enter an item ID above to view its info.',
         Warning: 'Warning',
     }
