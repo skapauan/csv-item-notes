@@ -46,10 +46,10 @@ export const DBQueries = {
         if (selectColumnNames && selectColumnNames.length > 0) {
             cols = selectColumnNames.join(',')
         }
-        if (notNullColNames && notNullColNames.length > 0) {
-            const conditions = notNullColNames
-                .map(name => `${name} IS NOT NULL`)
-                .join(' OR ')
+        if (notNullColNames) {
+            const conditions = notNullColNames.length > 0
+                ? notNullColNames.map(name => `${name} IS NOT NULL`).join(' OR ')
+                : '0=1'
             return `SELECT ${cols} FROM ${DBConstants.Items.Table}
             WHERE ${conditions};`
         }

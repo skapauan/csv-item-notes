@@ -9,12 +9,19 @@ import { Dispatch, GetState } from '../shared/store'
 
 export function saveFile(itemsWithNotesOnly: boolean = false) {
     return (dispatch: Dispatch, getState: GetState) => {
+        let numRows = 0
         dbi.getDataFromItems(itemsWithNotesOnly)
         .then((csvData) => {
+            numRows = csvData.length
             const csvString = Papa.unparse(csvData)
             return FileSystem.writeAsStringAsync(FSConstants.OutputFile, csvString)
         })
-        .then(() => dispatch(updateFileSaved(true)))
+        .then(() => {
+            if (itemsWithNotesOnly && numRows < 2) {
+                Alert.alert('', Strings.SaveThereAreNoNotes)
+            }
+            dispatch(updateFileSaved(true))
+        })
         .catch((e) => {
             Alert.alert(Strings.Error, Strings.ItemUnexpectedError)
             dispatch(updateFileSaved(false))
