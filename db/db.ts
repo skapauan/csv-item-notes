@@ -189,7 +189,7 @@ export class DB {
             // Populate DB.itemColumns from Items table_info and ItemCols rows
             this.itemColumns = []
             let index = 0
-            const info = await this.query(DBQueries.SelectItemsTableInfo)
+            const info = await this.query(DBQueries.PragmaTableInfoItems)
             for (let i = 0, row; !!(row = info.rows.item(i)); i++) {
                 if (row.name === DBConstants.Items.Id) continue
                 this.itemColumns.push({

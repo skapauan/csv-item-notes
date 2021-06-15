@@ -130,6 +130,9 @@ export const DBQueries = {
         ${DBConstants.ItemCols.IsNote}, ${DBConstants.ItemCols.Order})
         VALUES (?, ?, ?, ?);`,
 
+    PragmaTableInfoItems:
+        `PRAGMA table_info("${DBConstants.Items.Table}");`,
+
     SelectAllItemCols:
         `SELECT ${DBConstants.ItemCols.Id}, ${DBConstants.ItemCols.Name},
         ${DBConstants.ItemCols.Title}, ${DBConstants.ItemCols.IsNote},
@@ -138,8 +141,5 @@ export const DBQueries = {
     SelectCountItemCols: 'SELECT COUNT(1) AS count FROM item_cols;',
 
     SelectCountItems: 'SELECT COUNT(1) AS count FROM items;',
-
-    SelectItemsTableInfo:
-        `SELECT name, type FROM PRAGMA_TABLE_INFO("${DBConstants.Items.Table}");`,
 
 }
