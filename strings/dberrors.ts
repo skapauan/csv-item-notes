@@ -10,6 +10,6 @@ export function getItemDataErrorMessage(error: Error): string {
         case DBErrors.INVALID_NUMBER_ROWS:
             return Strings.ErrorInvalidNumberRows
         default:
-            return Strings.ErrorUnknown
+            return Strings.ErrorDatabase + error.message
     }
 }

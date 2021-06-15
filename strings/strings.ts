@@ -33,6 +33,7 @@ export const Strings = new LocalizedStrings({
         FileShareError: 'Sharing is not available on your device.',
         FileViewButton: 'View file',
         Error: 'Error',
+        ErrorDatabase: 'Database error: ',
         ErrorInvalidNumberRows:
             'Invalid CSV: At least one row of data is required, not including'
             + ' the header row',
@@ -40,7 +41,6 @@ export const Strings = new LocalizedStrings({
             'Invalid CSV: At least one column of data is required',
         ErrorInvalidFieldVariance:
             'Invalid CSV: All rows must have same number of fields',
-        ErrorUnknown: 'Unknown Error',
         IntroInstructions: 'To begin, choose a CSV file from your device.',
         ItemIdPlaceholder: 'Type item ID here',
         ItemNotFound: 'Item not found',
