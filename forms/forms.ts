@@ -16,8 +16,10 @@ export function getDbValue(formValue: FormValue, type: ColumnType)
         return num
     case ColumnType.Text:
         let str: string | null = null
-        if (typeof formValue === 'string')
+        if (typeof formValue === 'string') {
             str = formValue.trim()
+            if (str.length < 1) str = null
+        }
         return str
     default: // should never reach here
         return null
