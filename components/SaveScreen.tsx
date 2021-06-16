@@ -10,7 +10,7 @@ import { Strings } from '../strings/strings'
 import { FileShareButton } from './FileShareButton'
 import { FileViewButton } from './FileViewButton'
 import { SaveFileButton } from './SaveFileButton'
-import { updateSaveFileStatus } from './shared/actions'
+import { updateSaveFileId, updateSaveFileStatus } from './shared/actions'
 import { LoadingStatus } from './shared/loadingStatus'
 
 export function SaveScreen() {
@@ -23,6 +23,7 @@ export function SaveScreen() {
     const saveScreenIndex = useNavigationState(state => state.routeNames)
         .indexOf(Strings.ScreenNameSave)
     React.useEffect(() => {
+        dispatch(updateSaveFileId(-1))
         dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
     }, [currentIndex === saveScreenIndex])
 

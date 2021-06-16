@@ -1,7 +1,6 @@
 import * as FileSystem from 'expo-file-system'
 import Papa from 'papaparse'
 import { Alert } from 'react-native'
-import { DBConstants } from '../../db/constants'
 import { dbi } from '../../db/dbInstance'
 import { FSConstants } from '../../fs/constants'
 import { getId, getTempFile } from '../../fs/names'
@@ -15,14 +14,16 @@ export function saveFile(itemsWithNotesOnly: boolean = false) {
         // Generate ID for this file save
         const id = getId()
         const tempFile = getTempFile(id)
+        // Save file is in progress
         dispatch(updateSaveFileId(id))
+        dispatch(updateSaveFileStatus(LoadingStatus.Loading))
         // Get data from database
         let csvData
-        dispatch(updateSaveFileStatus(LoadingStatus.Loading))
         try {
             csvData = await dbi.getDataFromItems(itemsWithNotesOnly)
         } catch (e) {
             Alert.alert(Strings.Error, Strings.ErrorDatabase + e.message)
+            dispatch(updateSaveFileId(-1))
             dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
             return
         }
@@ -37,6 +38,7 @@ export function saveFile(itemsWithNotesOnly: boolean = false) {
             await FileSystem.writeAsStringAsync(tempFile, csvString)
         } catch (e) {
             Alert.alert(Strings.Error, Strings.ErrorFileSystem + e.message)
+            dispatch(updateSaveFileId(-1))
             dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
             return
         }
@@ -54,6 +56,7 @@ export function saveFile(itemsWithNotesOnly: boolean = false) {
                 { from: tempFile, to: FSConstants.OutputFile})
         } catch (e) {
             Alert.alert(Strings.Error, Strings.ErrorFileSystem + e.message)
+            dispatch(updateSaveFileId(-1))
             dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
             return
         }
