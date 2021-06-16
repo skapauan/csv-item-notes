@@ -1,5 +1,6 @@
 import { dbi } from '../../db/dbInstance'
 import { updateDataStatus } from '../shared/actions'
+import { LoadingStatus } from '../shared/loadingStatus'
 import { Dispatch, GetState } from '../shared/store'
 import { getNoteFields } from './getNoteFields'
 
@@ -8,8 +9,8 @@ export function checkDataStatus() {
         dbi.init()
         .then(() => {
             dispatch(getNoteFields())
-            dispatch(updateDataStatus(1))
+            dispatch(updateDataStatus(LoadingStatus.Done))
         })
-        .catch((e) => dispatch(updateDataStatus(0)))
+        .catch((e) => dispatch(updateDataStatus(LoadingStatus.Unstarted)))
     }
 }

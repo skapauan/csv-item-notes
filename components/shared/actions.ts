@@ -1,33 +1,30 @@
 import { ItemColumn, ItemOutput } from '../../db/types'
 import { FormValue } from '../../forms/forms'
+import { LoadingStatus } from './loadingStatus'
 
 // Action types
 
-export const ActionTypes = {
-    UpdateDataStatus: 'UpdateDataStatus',
-    UpdateFieldEditStatus: 'UpdateFieldEditStatus',
-    UpdateFileSaved: 'UpdateFileSaved',
-    UpdateNoteFields: 'UpdateNoteFields',
-    UpdateNoteInput: 'UpdateNoteInput',
-    UpdateOpenFileProgress: 'UpdateOpenFileProgress',
-    UpdateViewedItem: 'UpdateViewedItem',
-    UpdateViewedError: 'UpdateViewedError',
+export enum ActionTypes {
+    UpdateDataStatus,
+    UpdateFieldEditStatus,
+    UpdateNoteFields,
+    UpdateNoteInput,
+    UpdateOpenFileProgress,
+    UpdateSaveFileId,
+    UpdateSaveFileStatus,
+    UpdateViewedItem,
+    UpdateViewedError,
 }
 
 // Action creators
 
-export const updateDataStatus = (payload: number) => ({
+export const updateDataStatus = (payload: LoadingStatus) => ({
     type: ActionTypes.UpdateDataStatus,
     payload,
 })
 
 export const updateFieldEditStatus = (payload: ItemColumn | boolean) => ({
     type: ActionTypes.UpdateFieldEditStatus,
-    payload,
-})
-
-export const updateFileSaved = (payload: boolean) => ({
-    type: ActionTypes.UpdateFileSaved,
     payload,
 })
 
@@ -43,6 +40,16 @@ export const updateNoteInput = (payload: FormValue[]) => ({
 
 export const updateOpenFileProgress = (payload: number) => ({
     type: ActionTypes.UpdateOpenFileProgress,
+    payload,
+})
+
+export const updateSaveFileId = (payload: number) => ({
+    type: ActionTypes.UpdateSaveFileId,
+    payload,
+})
+
+export const updateSaveFileStatus = (payload: LoadingStatus) => ({
+    type: ActionTypes.UpdateSaveFileStatus,
     payload,
 })
 

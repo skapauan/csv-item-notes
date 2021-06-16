@@ -30,10 +30,12 @@ export const Strings = new LocalizedStrings({
         FileSavedError: 'File disappeared. Please save file again.',
         FileShareButton: 'Share file',
         FileShareDialogTitle: 'Share CSV file',
-        FileShareError: 'Sharing is not available on your device.',
+        FileShareFailedError: 'File share failed: ',
+        FileShareUnavailableError: 'Sharing is not available on your device.',
         FileViewButton: 'View file',
         Error: 'Error',
         ErrorDatabase: 'Database error: ',
+        ErrorFileSystem: 'Filesystem error: ',
         ErrorInvalidNumberRows:
             'Invalid CSV: At least one row of data is required, not including'
             + ' the header row',
@@ -59,6 +61,7 @@ export const Strings = new LocalizedStrings({
             + ' please save a file first if you wish to keep them.',
         OpenFileWarn: 'This will delete all current data and notes, and'
             + ' cannot be undone.',
+        PleaseWait: 'Please wait...',
         ScreenNameView: 'View Items Data',
         ScreenNameFields: 'Configure Note Fields',
         ScreenNameSave: 'Save As File',

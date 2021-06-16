@@ -10,11 +10,12 @@ import { Strings } from '../strings/strings'
 import { FileShareButton } from './FileShareButton'
 import { FileViewButton } from './FileViewButton'
 import { SaveFileButton } from './SaveFileButton'
-import { updateFileSaved } from './shared/actions'
+import { updateSaveFileStatus } from './shared/actions'
+import { LoadingStatus } from './shared/loadingStatus'
 
 export function SaveScreen() {
     const { dispatch, getState } = React.useContext(StoreContext)
-    const { fileSaved } = getState()
+    const { saveFileStatus } = getState()
     const [ withNotes, setWithNotes ] = React.useState(false)
 
     // Forget any saved file when user navigates away from this screen
@@ -22,13 +23,13 @@ export function SaveScreen() {
     const saveScreenIndex = useNavigationState(state => state.routeNames)
         .indexOf(Strings.ScreenNameSave)
     React.useEffect(() => {
-        dispatch(updateFileSaved(false))
+        dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
     }, [currentIndex === saveScreenIndex])
 
     const updateWithNotes = (value: boolean) => {
         if (value === withNotes) return
         setWithNotes(!withNotes)
-        dispatch(updateFileSaved(false))
+        dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
     }
 
     return (
@@ -54,7 +55,7 @@ export function SaveScreen() {
                 <View style={{ marginVertical: 15 }}>
                     <SaveFileButton itemsWithNotesOnly={withNotes} />
                 </View>
-                { fileSaved &&
+                { saveFileStatus === LoadingStatus.Done &&
                 <View style={{flexDirection: 'row' }}>
                     <View style={{flex: 1, marginRight: 10}}>
                         <FileViewButton />

@@ -3,7 +3,6 @@ import * as IntentLauncher from 'expo-intent-launcher'
 import { Alert } from 'react-native'
 import { FSConstants } from '../../fs/constants'
 import { Strings } from '../../strings/strings'
-import { updateFileSaved } from '../shared/actions'
 import { Dispatch, GetState } from '../shared/store'
 
 export function viewSavedFile() {
@@ -11,7 +10,6 @@ export function viewSavedFile() {
         const showError = (message?: string) => {
             Alert.alert(Strings.Error, Strings.FileSavedError
                 + message ? '\r\n\r\n' + message : '')
-            dispatch(updateFileSaved(false))
         }
         FileSystem.getContentUriAsync(FSConstants.OutputFile)
         .then((contentUri) => {

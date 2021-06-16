@@ -6,28 +6,31 @@ import useThunkReducer, { Thunk } from 'react-hook-thunk-reducer'
 import { ItemColumn, ItemOutput } from '../../db/types'
 import { ActionTypes } from './actions'
 import { FormValue, getFormValue } from '../../forms/forms'
+import { LoadingStatus } from './loadingStatus'
 
-export interface Action { type: string; payload: any; }
+export interface Action { type: ActionTypes; payload: any; }
 export interface StoreProviderProps { children: any; }
 export type Dispatch = React.Dispatch<Action | Thunk<State, Action>>
 export type GetState = () => State
 export interface State {
-    dataStatus: number;
+    dataStatus: LoadingStatus;
     fieldEditStatus: ItemColumn | boolean;
-    fileSaved: boolean;
     noteFields: ItemColumn[];
     noteInput: FormValue[];
     openFileProgress: number;
+    saveFileId: number;
+    saveFileStatus: LoadingStatus;
     viewedItem: ItemOutput | undefined;
     viewedError: string;
 }
 const initialState: State = {
-    dataStatus: -1,
+    dataStatus: LoadingStatus.Loading,
     fieldEditStatus: false,
-    fileSaved: false,
     noteFields: [],
     noteInput: [],
     openFileProgress: -1,
+    saveFileId: -1,
+    saveFileStatus: LoadingStatus.Unstarted,
     viewedItem: undefined,
     viewedError: '',
 }
@@ -40,14 +43,16 @@ export const StoreProvider = (props: StoreProviderProps) => {
                     return {...state, dataStatus: action.payload}
                 case ActionTypes.UpdateFieldEditStatus:
                     return {...state, fieldEditStatus: action.payload}
-                case ActionTypes.UpdateFileSaved:
-                    return {...state, fileSaved: action.payload}
                 case ActionTypes.UpdateNoteFields:
                     return {...state, noteFields: action.payload}
                 case ActionTypes.UpdateNoteInput:
                     return {...state, noteInput: action.payload}
                 case ActionTypes.UpdateOpenFileProgress:
                     return {...state, openFileProgress: action.payload}
+                case ActionTypes.UpdateSaveFileId:
+                    return {...state, saveFileId: action.payload}
+                case ActionTypes.UpdateSaveFileStatus:
+                    return {...state, saveFileStatus: action.payload}
                 case ActionTypes.UpdateViewedItem:
                     const viewedItem = action.payload as ItemOutput
                     if (viewedItem) {
