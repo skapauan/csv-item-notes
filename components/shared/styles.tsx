@@ -83,6 +83,9 @@ export const styles = StyleSheet.create({
     bodyFont: {
         fontSize: bodyFontSize,
     },
+    centered: {
+        textAlign: 'center',
+    },
     p: {
         marginVertical: bodyTextMarginVertical,
         fontSize: bodyFontSize,
@@ -118,5 +121,12 @@ export const styles = StyleSheet.create({
     textInput: {
         color: bodyColorRegular,
         fontSize: bodyFontSize,
+    },
+    highlightSection: {
+        backgroundColor: themeBg,
+        paddingHorizontal: bodyPadHorizontal,
+        paddingTop: bodyPadTop,
+        paddingBottom: bodyPadBottom,
+        marginVertical: bodyTextMarginVertical,
     },
 })

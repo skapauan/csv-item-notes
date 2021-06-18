@@ -1,8 +1,10 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
-import { CheckBox } from 'react-native-elements'
+import { View, ScrollView, Platform } from 'react-native'
+import { Card, CheckBox, Input } from 'react-native-elements'
 import { useNavigationState } from '@react-navigation/native'
-import { TopBar } from './TopBar'
+import { FSConstants } from '../fs/constants'
+import { updateSaveExternalUri, updateSaveFileStatus, updateSaveInternalUri } from './shared/actions'
+import { LoadingStatus } from './shared/loadingStatus'
 import { StoreContext } from './shared/store'
 import { styles } from './shared/styles'
 import { P } from './shared/textComponents'
@@ -10,12 +12,13 @@ import { Strings } from '../strings/strings'
 import { FileShareButton } from './FileShareButton'
 import { FileViewButton } from './FileViewButton'
 import { SaveFileButton } from './SaveFileButton'
-import { updateSaveFileId, updateSaveFileStatus } from './shared/actions'
-import { LoadingStatus } from './shared/loadingStatus'
+import { TopBar } from './TopBar'
+import { sanitizeFileName } from '../fs/names'
 
 export function SaveScreen() {
     const { dispatch, getState } = React.useContext(StoreContext)
-    const { saveFileStatus } = getState()
+    const { saveFileStatus, saveExternalUri } = getState()
+    const [ fileName, setFileName ] = React.useState(FSConstants.FileNameDefault)
     const [ withNotes, setWithNotes ] = React.useState(false)
 
     // Forget any saved file when user navigates away from this screen
@@ -23,10 +26,15 @@ export function SaveScreen() {
     const saveScreenIndex = useNavigationState(state => state.routeNames)
         .indexOf(Strings.ScreenNameSave)
     React.useEffect(() => {
-        dispatch(updateSaveFileId(-1))
         dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
+        dispatch(updateSaveExternalUri(''))
+        dispatch(updateSaveInternalUri(''))
     }, [currentIndex === saveScreenIndex])
 
+    const cleanFileName = () => {
+        setFileName(sanitizeFileName(fileName, true))
+        dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
+    }
     const updateWithNotes = (value: boolean) => {
         if (value === withNotes) return
         setWithNotes(!withNotes)
@@ -38,7 +46,8 @@ export function SaveScreen() {
             <TopBar title={Strings.ScreenNameSave} />
             <ScrollView style={styles.bodyScrollOuter}
                     contentContainerStyle={styles.bodyScrollInner}>
-                <P>{Strings.SaveScreenInstructions}</P>
+
+                <P>{Strings.SaveInclude}</P>
                 <CheckBox
                     title={Strings.SaveItemsAll}
                     checked={!withNotes}
@@ -53,19 +62,43 @@ export function SaveScreen() {
                     checkedIcon='dot-circle-o'
                     uncheckedIcon='circle-o'
                     />
-                <View style={{ marginVertical: 15 }}>
-                    <SaveFileButton itemsWithNotesOnly={withNotes} />
-                </View>
-                { saveFileStatus === LoadingStatus.Done &&
-                <View style={{flexDirection: 'row' }}>
-                    <View style={{flex: 1, marginRight: 10}}>
-                        <FileViewButton />
+
+                <P>{Strings.SaveFileName}</P>
+                <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+                    <View style={{ flex: 1 }}>
+                        <Input value={fileName}
+                            onChangeText={setFileName}
+                            onBlur={cleanFileName}
+                            onSubmitEditing={cleanFileName}
+                            placeholder={FSConstants.FileNameDefault} />
                     </View>
-                    <View style={{flex: 1}}>
-                        <FileShareButton />
+                    <View>
+                        <P>.csv</P>
+                    </View>
+                </View>
+
+                <View style={{ marginBottom: 15 }}>
+                    <SaveFileButton
+                        fileName={fileName}
+                        itemsWithNotesOnly={withNotes} />
+                </View>
+
+                { saveFileStatus === LoadingStatus.Done &&
+                <View style={styles.highlightSection}>
+                    <P centered>{ saveExternalUri
+                        ? Strings.SavedToDevice
+                        : Strings.SavedTemporary }</P>
+                    <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                        <View style={{flex: 1, marginRight: 10}}>
+                            <FileViewButton />
+                        </View>
+                        <View style={{flex: 1}}>
+                            <FileShareButton />
+                        </View>
                     </View>
                 </View>
                 }
+
             </ScrollView>
         </View>
     )

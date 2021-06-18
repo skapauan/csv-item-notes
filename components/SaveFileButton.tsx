@@ -5,21 +5,34 @@ import { LoadingStatus } from './shared/loadingStatus'
 import { StoreContext } from './shared/store'
 import { saveFile } from './thunks/saveFile'
 
-export interface SaveFileButtonProps { itemsWithNotesOnly?: boolean; }
+export interface SaveFileButtonProps {
+    fileName: string;
+    itemsWithNotesOnly?: boolean;
+}
 
-export function SaveFileButton({ itemsWithNotesOnly }: SaveFileButtonProps) {
+export function SaveFileButton({ fileName, itemsWithNotesOnly }
+: SaveFileButtonProps) {
     const { dispatch, getState } = React.useContext(StoreContext)
-    const { saveFileStatus } = getState()
+    const { saveFileStatus, saveExternalUri } = getState()
 
-    const isLoading = saveFileStatus === LoadingStatus.Loading
+    const onPress = () => dispatch(saveFile(fileName, itemsWithNotesOnly))
 
-    const btnProps = {
-        disabled: isLoading,
-        onPress: () => dispatch(saveFile(itemsWithNotesOnly)),
-        title: isLoading ? Strings.PleaseWait : Strings.ButtonSave,
-        type: (saveFileStatus === LoadingStatus.Done
-            ? 'outline' : 'solid') as ('solid' | 'outline'),
+    let disabled = false,
+        title = Strings.ButtonSave,
+        type = 'outline' as ('outline' | 'solid')
+    switch (saveFileStatus) {
+        case LoadingStatus.Unstarted:
+            type = 'solid'
+            break
+        case LoadingStatus.Loading:
+            disabled = true
+            title = Strings.PleaseWait
+            break
+        case LoadingStatus.Done:
+            break
     }
+
+    const btnProps = { disabled, onPress, title, type }
 
     return <Button {...btnProps} />
 }

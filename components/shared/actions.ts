@@ -10,8 +10,9 @@ export enum ActionTypes {
     UpdateNoteFields,
     UpdateNoteInput,
     UpdateOpenFileProgress,
-    UpdateSaveFileId,
     UpdateSaveFileStatus,
+    UpdateSaveExternalUri,
+    UpdateSaveInternalUri,
     UpdateViewedItem,
     UpdateViewedError,
 }
@@ -43,13 +44,18 @@ export const updateOpenFileProgress = (payload: number) => ({
     payload,
 })
 
-export const updateSaveFileId = (payload: number) => ({
-    type: ActionTypes.UpdateSaveFileId,
+export const updateSaveFileStatus = (payload: LoadingStatus) => ({
+    type: ActionTypes.UpdateSaveFileStatus,
     payload,
 })
 
-export const updateSaveFileStatus = (payload: LoadingStatus) => ({
-    type: ActionTypes.UpdateSaveFileStatus,
+export const updateSaveExternalUri = (payload: string) => ({
+    type: ActionTypes.UpdateSaveExternalUri,
+    payload,
+})
+
+export const updateSaveInternalUri = (payload: string) => ({
+    type: ActionTypes.UpdateSaveInternalUri,
     payload,
 })
 

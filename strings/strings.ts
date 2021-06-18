@@ -33,6 +33,7 @@ export const Strings = new LocalizedStrings({
         FileShareFailedError: 'File share failed: ',
         FileShareUnavailableError: 'Sharing is not available on your device.',
         FileViewButton: 'View file',
+        FileViewFailedError: 'File view failed: ',
         Error: 'Error',
         ErrorDatabase: 'Database error: ',
         ErrorFileSystem: 'Filesystem error: ',
@@ -67,11 +68,18 @@ export const Strings = new LocalizedStrings({
         ScreenNameSave: 'Save As File',
         ScreenNameOpen: 'Open File',
         ScreenNameSettings: 'Settings',
+        SavedTemporary: 'Temporary file.',
+        SavedToDevice: 'Saved to device.',
+        SaveDirectoryPermissionWarn: 'File was not saved on device, since'
+            + ' a folder was not selected.\r\n\r\nYou can still view or share'
+            + ' the file.',
+        SaveFileName: 'File name:',
+        SaveInclude: 'Include in file:',
         SaveItemsAll: 'All items',
         SaveItemsHavingNotes: 'Only items having notes',
         SaveThereAreNoNotes: 'There are no items with notes, so the CSV file'
             + ' will have no items.',
-        SaveScreenInstructions: 'Save a new CSV file with:',
+        SaveWriteFileWarn: 'Failed to write file on device.\r\n\r\nDetails: ',
         ViewScreenInstructions: 'Enter an item ID above to view its info.',
         Warning: 'Warning',
     }

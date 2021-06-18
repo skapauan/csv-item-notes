@@ -18,8 +18,9 @@ export interface State {
     noteFields: ItemColumn[];
     noteInput: FormValue[];
     openFileProgress: number;
-    saveFileId: number;
     saveFileStatus: LoadingStatus;
+    saveExternalUri: string;
+    saveInternalUri: string;
     viewedItem: ItemOutput | undefined;
     viewedError: string;
 }
@@ -29,8 +30,9 @@ const initialState: State = {
     noteFields: [],
     noteInput: [],
     openFileProgress: -1,
-    saveFileId: -1,
     saveFileStatus: LoadingStatus.Unstarted,
+    saveExternalUri: '',
+    saveInternalUri: '',
     viewedItem: undefined,
     viewedError: '',
 }
@@ -49,10 +51,12 @@ export const StoreProvider = (props: StoreProviderProps) => {
                     return {...state, noteInput: action.payload}
                 case ActionTypes.UpdateOpenFileProgress:
                     return {...state, openFileProgress: action.payload}
-                case ActionTypes.UpdateSaveFileId:
-                    return {...state, saveFileId: action.payload}
                 case ActionTypes.UpdateSaveFileStatus:
                     return {...state, saveFileStatus: action.payload}
+                case ActionTypes.UpdateSaveExternalUri:
+                    return {...state, saveExternalUri: action.payload}
+                case ActionTypes.UpdateSaveInternalUri:
+                    return {...state, saveInternalUri: action.payload}
                 case ActionTypes.UpdateViewedItem:
                     const viewedItem = action.payload as ItemOutput
                     if (viewedItem) {

@@ -1,11 +1,16 @@
+import sanitize from 'sanitize-filename'
 import { FSConstants } from './constants'
 
-let count = 0
-
-export function getId () {
-    return count++
+export function getInternalUri(fileName: string): string {
+    return FSConstants.CacheFolder + fileName + FSConstants.CsvExtension
 }
 
-export function getTempFile(id: number) {
-    return FSConstants.TempFilePrefix + id + FSConstants.TempFileSuffix
+export function sanitizeFileName(fileName: string,
+allowEmptyString: boolean = false): string {
+    const fallback = allowEmptyString ? '' : FSConstants.FileNameDefault
+    return (
+        typeof fileName === 'string'
+        ? sanitize(fileName.trim()) || fallback
+        : fallback
+    )
 }
