@@ -49,9 +49,12 @@ export function saveFile(itemsWithNotesOnly: boolean = false) {
             } catch (e) {}
             return
         }
-        // Move file to final location
+        // Delete existing file if there is one
         try {
             await FileSystem.deleteAsync(FSConstants.OutputFile)
+        } catch (e) {}
+        // Move file to final location
+        try {
             await FileSystem.moveAsync(
                 { from: tempFile, to: FSConstants.OutputFile})
         } catch (e) {
