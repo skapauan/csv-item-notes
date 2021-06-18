@@ -9,6 +9,7 @@ import { FSConstants } from '../../fs/constants'
 import { getItemDataErrorMessage } from '../../strings/dberrors'
 import { Strings } from '../../strings/strings'
 import { getNoteFields } from './getNoteFields'
+import { LoadingStatus } from '../shared/loadingStatus'
 
 export type FileInfo = {
     document: DocumentPicker.DocumentResult;
@@ -39,7 +40,7 @@ export function openFile(
         const timeStart = Date.now()
         const prevDataStatus = getState().dataStatus
         dispatch(updateOpenFileProgress(0))
-        dispatch(updateDataStatus(-1))
+        dispatch(updateDataStatus(LoadingStatus.Loading))
         //TODO check device storage and/or enforce any file size limits here
         // Read CSV file as string
         try {
@@ -62,7 +63,7 @@ export function openFile(
         } catch (e) {
             try { await dbi.clearAll() } catch (err) {}
             showError(getItemDataErrorMessage(e))
-            dispatch(updateDataStatus(0))
+            dispatch(updateDataStatus(LoadingStatus.Unstarted))
             dispatch(updateOpenFileProgress(-1))
             return
         }
@@ -71,7 +72,7 @@ export function openFile(
         const timeEnd = Date.now()
         dispatch(updateViewedItem(undefined))
         dispatch(updateViewedError(''))
-        dispatch(updateDataStatus(1))
+        dispatch(updateDataStatus(LoadingStatus.Done))
         dispatch(updateOpenFileProgress(-1))
         success({
             document,
