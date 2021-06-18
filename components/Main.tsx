@@ -1,4 +1,5 @@
 import React from 'react'
+import { deleteCacheFiles } from '../fs/deleteCacheFiles'
 import { Intro } from './Intro'
 import { Loading } from './Loading'
 import { MainNavigation } from './MainNavigation'
@@ -10,7 +11,10 @@ export function Main() {
     const { dispatch, getState } = React.useContext(StoreContext)
 
     // When app starts, check if DB has data
-    React.useEffect(() => dispatch(checkDataStatus()), [])
+    React.useEffect(() => {
+        dispatch(checkDataStatus())
+        deleteCacheFiles().catch(e => {})
+    }, [])
 
     switch (getState().dataStatus) {
         case LoadingStatus.Done:

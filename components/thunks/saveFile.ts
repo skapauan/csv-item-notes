@@ -4,6 +4,7 @@ import Papa from 'papaparse'
 import { Alert, Platform } from 'react-native'
 import { dbi } from '../../db/dbInstance'
 import { FSConstants } from '../../fs/constants'
+import { createCacheDirectory } from '../../fs/createCacheDirectory'
 import { getInternalUri, sanitizeFileName } from '../../fs/names'
 import { Strings } from '../../strings/strings'
 import { updateSaveFileStatus, updateSaveExternalUri, updateSaveInternalUri }
@@ -46,6 +47,7 @@ export function saveFile(fileName: string, itemsWithNotesOnly: boolean = false) 
         // Write CSV to app's cache directory
         const internalUri = getInternalUri(fileName)
         try {
+            await createCacheDirectory()
             await FileSystem.writeAsStringAsync(internalUri, csvString)
         } catch (e) {
             Alert.alert(Strings.Error, Strings.ErrorFileSystem + e.message)

@@ -1,7 +1,7 @@
 import { cacheDirectory } from 'expo-file-system'
 
 export const FSConstants = {
-    CacheFolder: cacheDirectory || '',
+    CacheFolder: (cacheDirectory || '') + 'temp-save-files/',
     DownloadFolder: 'Download',
     FileNameDefault: 'CSVItemNotes',
     CsvExtension: '.csv',
