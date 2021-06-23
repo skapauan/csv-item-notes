@@ -3,8 +3,7 @@ import { Alert } from 'react-native'
 import { FSConstants } from './constants'
 import { Strings } from '../strings/strings'
 
-export async function shareSavedFile(fileUri: string) {
-
+export async function shareSavedFile(fileUri: string): Promise<void> {
     if (!fileUri) {
         Alert.alert(Strings.Error, Strings.FileSavedError)
         return
@@ -22,8 +21,6 @@ export async function shareSavedFile(fileUri: string) {
             UTI: FSConstants.CsvUti,
         })
     } catch (e) {
-        Alert.alert(Strings.Error, Strings.FileShareFailedError
-            + e.message)
+        Alert.alert(Strings.Error, Strings.FileShareFailedError + e.message)
     }
-
 }

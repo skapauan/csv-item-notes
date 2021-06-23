@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar'
 import { StoreProvider } from '../redux/store'
 import { Main } from './Main'
 
-export default function App() {
+export default function App(): JSX.Element {
     return (
         <SafeAreaProvider>
             <StatusBar style="light" backgroundColor="black" />

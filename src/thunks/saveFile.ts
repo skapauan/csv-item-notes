@@ -6,15 +6,17 @@ import { dbi } from '../database/dbInstance'
 import { FSConstants } from '../filesystem/constants'
 import { createCacheDirectory } from '../filesystem/createCacheDirectory'
 import { getInternalUri, sanitizeFileName } from '../filesystem/names'
-import { updateSaveFileStatus, updateSaveExternalUri, updateSaveInternalUri }
-    from '../redux/actions'
+import {
+    updateSaveFileStatus,
+    updateSaveExternalUri,
+    updateSaveInternalUri,
+} from '../redux/actions'
 import { LoadingStatus } from '../redux/loadingStatus'
-import { Dispatch, GetState } from '../redux/store'
+import { Dispatch, Thunk } from '../redux/store'
 import { Strings } from '../strings/strings'
 
-export function saveFile(fileName: string, itemsWithNotesOnly: boolean = false) {
-    return async (dispatch: Dispatch, getState: GetState) => {
-
+export function saveFile(fileName: string, itemsWithNotesOnly = false): Thunk {
+    return async (dispatch: Dispatch) => {
         let willWarnNoNotes = false
         const warnNoNotes = () => {
             if (itemsWithNotesOnly && numRows < 2) {
@@ -62,13 +64,19 @@ export function saveFile(fileName: string, itemsWithNotesOnly: boolean = false) 
         let externalUri = ''
         if (Platform.OS === 'android') {
             const dirUri = StorageAccessFramework.getUriForDirectoryInRoot(
-                FSConstants.DownloadFolder)
-            const dirPerm = await (StorageAccessFramework
-                .requestDirectoryPermissionsAsync(dirUri))
+                FSConstants.DownloadFolder,
+            )
+            const dirPerm =
+                await StorageAccessFramework.requestDirectoryPermissionsAsync(
+                    dirUri,
+                )
             if (dirPerm.granted) {
                 try {
                     externalUri = await StorageAccessFramework.createFileAsync(
-                        dirPerm.directoryUri, fileName, FSConstants.CsvMimeType)
+                        dirPerm.directoryUri,
+                        fileName,
+                        FSConstants.CsvMimeType,
+                    )
                     await FileSystem.writeAsStringAsync(externalUri, csvString)
                 } catch (e) {
                     willWarnNoNotes = true
@@ -76,7 +84,7 @@ export function saveFile(fileName: string, itemsWithNotesOnly: boolean = false) 
                         Strings.Warning,
                         Strings.SaveWriteFileWarn + e.message,
                         [{ onPress: warnNoNotes }],
-                        { onDismiss: warnNoNotes }
+                        { onDismiss: warnNoNotes },
                     )
                 }
             } else {
@@ -85,7 +93,7 @@ export function saveFile(fileName: string, itemsWithNotesOnly: boolean = false) 
                     Strings.Warning,
                     Strings.SaveDirectoryPermissionWarn,
                     [{ onPress: warnNoNotes }],
-                    { onDismiss: warnNoNotes }
+                    { onDismiss: warnNoNotes },
                 )
             }
         }
@@ -94,6 +102,5 @@ export function saveFile(fileName: string, itemsWithNotesOnly: boolean = false) 
         // Save file is complete
         if (!willWarnNoNotes) warnNoNotes()
         dispatch(updateSaveFileStatus(LoadingStatus.Done))
-
     }
 }

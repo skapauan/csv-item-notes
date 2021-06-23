@@ -2,33 +2,38 @@ import React from 'react'
 import { Alert } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { MaterialIcons } from '@expo/vector-icons'
-import { Strings } from '../strings/strings'
-import { OverlayTemplate } from './OverlayTemplate'
 import { ItemColumn } from '../database/types'
+import { updateFieldEdit } from '../redux/actions'
 import { StoreContext } from '../redux/store'
-import { updateFieldEditStatus } from '../redux/actions'
-import { modifyNoteField } from '../thunks/modifyNoteField'
-import { deleteNoteField } from '../thunks/deleteNoteField'
-import { P } from './textComponents'
+import { Strings } from '../strings/strings'
 import { styles, topIconColor } from '../styles/styles'
+import { deleteNoteField } from '../thunks/deleteNoteField'
+import { modifyNoteField } from '../thunks/modifyNoteField'
+import { OverlayTemplate } from './OverlayTemplate'
+import { P } from './textComponents'
 
 export type FieldEditOverlayProps = { field: ItemColumn }
 
-export function FieldEditOverlay({ field }: FieldEditOverlayProps) {
+export function FieldEditOverlay({
+    field,
+}: FieldEditOverlayProps): JSX.Element {
     const { dispatch } = React.useContext(StoreContext)
     const [title, setTitle] = React.useState(field.title)
 
-    const onCancel = () => dispatch(updateFieldEditStatus(false))
-    const onSave = () => dispatch(modifyNoteField({...field, title}))
+    const onCancel = () => dispatch(updateFieldEdit(false))
+    const onSave = () => dispatch(modifyNoteField({ ...field, title }))
     const onDelete = () => {
-        Alert.alert(Strings.Warning, Strings.FieldDeleteWarn, [{
-            text: Strings.ButtonCancel,
-            style: 'cancel',
-        }, {
-            text: Strings.ButtonDelete,
-            style: 'destructive',
-            onPress: () => dispatch(deleteNoteField(field)),
-        }])
+        Alert.alert(Strings.Warning, Strings.FieldDeleteWarn, [
+            {
+                text: Strings.ButtonCancel,
+                style: 'cancel',
+            },
+            {
+                text: Strings.ButtonDelete,
+                style: 'destructive',
+                onPress: () => dispatch(deleteNoteField(field)),
+            },
+        ])
     }
 
     return (
@@ -38,13 +43,19 @@ export function FieldEditOverlay({ field }: FieldEditOverlayProps) {
                 value={title}
                 onChangeText={setTitle}
                 style={styles.textInput}
-                />
+            />
             <Button
                 title={Strings.FieldDeleteButton}
                 type="clear"
-                icon={<MaterialIcons name="delete" size={28} color={topIconColor} />}
+                icon={
+                    <MaterialIcons
+                        name="delete"
+                        size={28}
+                        color={topIconColor}
+                    />
+                }
                 onPress={onDelete}
-                />
+            />
         </OverlayTemplate>
     )
 }

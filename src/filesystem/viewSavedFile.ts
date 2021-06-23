@@ -4,13 +4,17 @@ import { Alert, Platform } from 'react-native'
 import { Strings } from '../strings/strings'
 import { FSConstants } from './constants'
 
-export async function viewSavedFile(uri: string, isContentUri: boolean) {
-
+export async function viewSavedFile(
+    uri: string,
+    isContentUri: boolean,
+): Promise<void> {
     if (Platform.OS !== 'android') return
 
     const showFileError = (message?: string) => {
-        Alert.alert(Strings.Error, Strings.FileSavedError
-            + message ? '\r\n\r\n' + message : '')
+        Alert.alert(
+            Strings.Error,
+            Strings.FileSavedError + message ? '\r\n\r\n' + message : '',
+        )
     }
     let contentUri
     if (isContentUri) {
@@ -29,16 +33,12 @@ export async function viewSavedFile(uri: string, isContentUri: boolean) {
     }
 
     try {
-        await IntentLauncher.startActivityAsync(
-            'android.intent.action.VIEW',
-            {
-                data: contentUri,
-                flags: 1,
-                type: FSConstants.CsvMimeType,
-            }
-        )
+        await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+            data: contentUri,
+            flags: 1,
+            type: FSConstants.CsvMimeType,
+        })
     } catch (e) {
         Alert.alert(Strings.Error, Strings.FileViewFailedError)
     }
-
 }

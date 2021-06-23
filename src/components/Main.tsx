@@ -7,13 +7,13 @@ import { Intro } from './Intro'
 import { Loading } from './Loading'
 import { MainNavigation } from './MainNavigation'
 
-export function Main() {
+export function Main(): JSX.Element {
     const { dispatch, getState } = React.useContext(StoreContext)
 
     // When app starts, check if DB has data
     React.useEffect(() => {
         dispatch(checkDataStatus())
-        deleteCacheFiles().catch(e => {})
+        deleteCacheFiles().catch()
     }, [])
 
     switch (getState().dataStatus) {

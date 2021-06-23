@@ -3,26 +3,30 @@ import * as FileSystem from 'expo-file-system'
 import Papa from 'papaparse'
 import { dbi } from '../database/dbInstance'
 import { FSConstants } from '../filesystem/constants'
-import { updateDataStatus, updateOpenFileProgress, updateViewedError,
-    updateViewedItem } from '../redux/actions'
+import {
+    updateDataStatus,
+    updateOpenFileProgress,
+    updateViewedError,
+    updateViewedItem,
+} from '../redux/actions'
 import { LoadingStatus } from '../redux/loadingStatus'
-import { Dispatch, GetState } from '../redux/store'
+import { Dispatch, GetState, Thunk } from '../redux/store'
 import { getItemDataErrorMessage } from '../strings/dberrors'
 import { Strings } from '../strings/strings'
 import { getNoteFields } from './getNoteFields'
 
 export type FileInfo = {
-    document: DocumentPicker.DocumentResult;
-    loadTime: number;
-    rows: number;
+    document: DocumentPicker.DocumentResult
+    loadTime: number
+    rows: number
 }
 export function openFile(
     success: (fileInfo: FileInfo) => void,
     showCancel: (message: string) => void,
-    showError: (message: string) => void
-) {
+    showError: (message: string) => void,
+): Thunk {
     return async (dispatch: Dispatch, getState: GetState) => {
-        let document, csvString, csvData
+        let document, csvString
         // Prompt user to choose CSV file
         try {
             document = await DocumentPicker.getDocumentAsync({
@@ -54,14 +58,18 @@ export function openFile(
         //TODO delete local file not needed anymore
         //TODO save file name, size, and last modified to database
         // Parse data and populate database
-        csvData = Papa.parse<string[]>(csvString, { skipEmptyLines: true })
+        const csvData = Papa.parse<string[]>(csvString, {
+            skipEmptyLines: true,
+        })
         try {
             await dbi.setItemsFromData(
                 { rows: csvData.data, hasHeaderRow: true },
-                (done, total) => dispatch(updateOpenFileProgress(done/total))
+                (done, total) => dispatch(updateOpenFileProgress(done / total)),
             )
         } catch (e) {
-            try { await dbi.clearAll() } catch (err) {}
+            try {
+                await dbi.clearAll()
+            } catch (err) {}
             showError(getItemDataErrorMessage(e))
             dispatch(updateDataStatus(LoadingStatus.Unstarted))
             dispatch(updateOpenFileProgress(-1))

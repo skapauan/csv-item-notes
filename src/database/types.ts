@@ -1,39 +1,38 @@
-
 export type DBValue = string | number | boolean | null
-export type DBQuery = string | { text: string, values: DBValue[] }
-export type ItemDataInput = { rows: string[][], hasHeaderRow?: boolean }
+export type DBQuery = string | { text: string; values: DBValue[] }
+export type ItemDataInput = { rows: string[][]; hasHeaderRow?: boolean }
 export type ItemColumn = {
-    id?: number;
-    index: number;
-    name: string;
-    type: ColumnType;
-    title?: string;
-    isNote?: boolean;
-    order?: number;
+    id?: number
+    index: number
+    name: string
+    type: ColumnType
+    title?: string
+    isNote?: boolean
+    order?: number
 }
 export type CreateNoteInput = {
-    title: string;
-    type: ColumnType;
+    title: string
+    type: ColumnType
 }
 export type EditNoteInput = {
-    id: number;
-    title?: string;
-    order?: number;
+    id: number
+    title?: string
+    order?: number
 }
 export type ItemsRow = {
-    'item_id': number;
-    [name: string]: DBValue;
+    item_id: number
+    [name: string]: DBValue
 }
 export type ItemColsRow = {
-    'item_col_id': number;
-    'name': string;
-    'title': string;
-    'is_note': number;
-    'note_order': number | null;
+    item_col_id: number
+    name: string
+    title: string
+    is_note: number
+    note_order: number | null
 }
 export type ItemOutput = {
-    id: number;
-    itemColumnValues: DBValue[];
+    id: number
+    itemColumnValues: DBValue[]
 }
 export enum ColumnType {
     Text = 'TEXT',

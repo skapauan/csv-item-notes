@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Keyboard, Pressable, TextInput, View } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
-import { Strings } from '../strings/strings'
 import { StoreContext } from '../redux/store'
-import { findItemById } from '../thunks/findItemById'
+import { Strings } from '../strings/strings'
 import { styles, topIconColor } from '../styles/styles'
+import { findItemById } from '../thunks/findItemById'
 
-export function TopSearch() {
+export function TopSearch(): JSX.Element {
     const { dispatch } = React.useContext(StoreContext)
     const [text, setText] = useState('')
     const [lastSearched, setLastSearched] = useState('')
@@ -28,7 +28,7 @@ export function TopSearch() {
         Keyboard.dismiss()
     }
     const onPressClear = () => setText('')
-    
+
     return (
         <View style={styles.topSearch}>
             <TextInput
@@ -40,18 +40,24 @@ export function TopSearch() {
                 keyboardType={'numeric'}
                 placeholder={Strings.ItemIdPlaceholder}
                 style={styles.topSearchInput}
-                />
-            { isFocused && text !== '' && text !== lastSearched &&
-            <Pressable onPress={onPressClear} style={styles.topSearchButton}>
-                <MaterialIcons name="clear" size={28} color={topIconColor} />
-            </Pressable>
-            }
-            { isFocused && text !== '' &&
-            <Pressable onPress={onPressDone} style={styles.topSearchButton}>
-                <MaterialIcons name="done" size={28} color={topIconColor} />
-            </Pressable>
-            }
+            />
+            {isFocused && text !== '' && text !== lastSearched && (
+                <Pressable
+                    onPress={onPressClear}
+                    style={styles.topSearchButton}
+                >
+                    <MaterialIcons
+                        name="clear"
+                        size={28}
+                        color={topIconColor}
+                    />
+                </Pressable>
+            )}
+            {isFocused && text !== '' && (
+                <Pressable onPress={onPressDone} style={styles.topSearchButton}>
+                    <MaterialIcons name="done" size={28} color={topIconColor} />
+                </Pressable>
+            )}
         </View>
     )
-    
 }

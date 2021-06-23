@@ -8,11 +8,12 @@ import { NotesSheet } from './NotesSheet'
 import { DD, DT, P } from './textComponents'
 import { TopBar } from './TopBar'
 
-export function ViewScreen() {
+export function ViewScreen(): JSX.Element {
     const { getState } = React.useContext(StoreContext)
     const { viewedItem, viewedError } = getState()
 
-    let content, haveNotes = false
+    let content,
+        haveNotes = false
     if (viewedError) {
         content = <P>{viewedError}</P>
     } else if (viewedItem) {
@@ -31,11 +32,13 @@ export function ViewScreen() {
     return (
         <View style={styles.outerView}>
             <TopBar showSearch={true} />
-            <ScrollView style={styles.bodyScrollOuter}
-                    contentContainerStyle={styles.bodyScrollInner}>
+            <ScrollView
+                style={styles.bodyScrollOuter}
+                contentContainerStyle={styles.bodyScrollInner}
+            >
                 {content}
             </ScrollView>
-            { haveNotes && <NotesSheet /> }
+            {haveNotes && <NotesSheet />}
         </View>
     )
 }

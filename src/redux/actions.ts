@@ -2,69 +2,108 @@ import { ItemColumn, ItemOutput } from '../database/types'
 import { FormValue } from '../forms/forms'
 import { LoadingStatus } from './loadingStatus'
 
-// Action types
-
-export enum ActionTypes {
-    UpdateDataStatus,
-    UpdateFieldEditStatus,
-    UpdateNoteFields,
-    UpdateNoteInput,
-    UpdateOpenFileProgress,
-    UpdateSaveFileStatus,
-    UpdateSaveExternalUri,
-    UpdateSaveInternalUri,
-    UpdateViewedItem,
-    UpdateViewedError,
+interface A<T, P> {
+    type: T
+    payload: P
 }
 
-// Action creators
+// Action types
 
-export const updateDataStatus = (payload: LoadingStatus) => ({
-    type: ActionTypes.UpdateDataStatus,
+export enum ActionType {
+    DataStatus,
+    FieldEdit,
+    NoteFields,
+    NoteInput,
+    OpenFileProgress,
+    SaveExternalUri,
+    SaveFileStatus,
+    SaveInternalUri,
+    ViewedError,
+    ViewedItem,
+}
+
+export type Action =
+    | ActionDataStatus
+    | ActionFieldEdit
+    | ActionNoteFields
+    | ActionNoteInput
+    | ActionOpenFileProgress
+    | ActionSaveExternalUri
+    | ActionSaveFileStatus
+    | ActionSaveInternalUri
+    | ActionViewedError
+    | ActionViewedItem
+
+// Action creators returning actions
+
+export type ActionDataStatus = A<ActionType.DataStatus, LoadingStatus>
+export const updateDataStatus = (payload: LoadingStatus): ActionDataStatus => ({
+    type: ActionType.DataStatus,
     payload,
 })
 
-export const updateFieldEditStatus = (payload: ItemColumn | boolean) => ({
-    type: ActionTypes.UpdateFieldEditStatus,
+export type ActionFieldEdit = A<ActionType.FieldEdit, ItemColumn | boolean>
+export const updateFieldEdit = (
+    payload: ItemColumn | boolean,
+): ActionFieldEdit => ({
+    type: ActionType.FieldEdit,
     payload,
 })
 
-export const updateNoteFields = (payload: ItemColumn[]) => ({
-    type: ActionTypes.UpdateNoteFields,
+export type ActionNoteFields = A<ActionType.NoteFields, ItemColumn[]>
+export const updateNoteFields = (payload: ItemColumn[]): ActionNoteFields => ({
+    type: ActionType.NoteFields,
     payload,
 })
 
-export const updateNoteInput = (payload: FormValue[]) => ({
-    type: ActionTypes.UpdateNoteInput,
+export type ActionNoteInput = A<ActionType.NoteInput, FormValue[]>
+export const updateNoteInput = (payload: FormValue[]): ActionNoteInput => ({
+    type: ActionType.NoteInput,
     payload,
 })
 
-export const updateOpenFileProgress = (payload: number) => ({
-    type: ActionTypes.UpdateOpenFileProgress,
+export type ActionOpenFileProgress = A<ActionType.OpenFileProgress, number>
+export const updateOpenFileProgress = (
+    payload: number,
+): ActionOpenFileProgress => ({
+    type: ActionType.OpenFileProgress,
     payload,
 })
 
-export const updateSaveFileStatus = (payload: LoadingStatus) => ({
-    type: ActionTypes.UpdateSaveFileStatus,
+export type ActionSaveFileStatus = A<ActionType.SaveFileStatus, LoadingStatus>
+export const updateSaveFileStatus = (
+    payload: LoadingStatus,
+): ActionSaveFileStatus => ({
+    type: ActionType.SaveFileStatus,
     payload,
 })
 
-export const updateSaveExternalUri = (payload: string) => ({
-    type: ActionTypes.UpdateSaveExternalUri,
+export type ActionSaveExternalUri = A<ActionType.SaveExternalUri, string>
+export const updateSaveExternalUri = (
+    payload: string,
+): ActionSaveExternalUri => ({
+    type: ActionType.SaveExternalUri,
     payload,
 })
 
-export const updateSaveInternalUri = (payload: string) => ({
-    type: ActionTypes.UpdateSaveInternalUri,
+export type ActionSaveInternalUri = A<ActionType.SaveInternalUri, string>
+export const updateSaveInternalUri = (
+    payload: string,
+): ActionSaveInternalUri => ({
+    type: ActionType.SaveInternalUri,
     payload,
 })
 
-export const updateViewedItem = (payload: ItemOutput | undefined) => ({
-    type: ActionTypes.UpdateViewedItem,
+export type ActionViewedItem = A<ActionType.ViewedItem, ItemOutput | undefined>
+export const updateViewedItem = (
+    payload: ItemOutput | undefined,
+): ActionViewedItem => ({
+    type: ActionType.ViewedItem,
     payload,
 })
 
-export const updateViewedError = (payload: string) => ({
-    type: ActionTypes.UpdateViewedError,
+export type ActionViewedError = A<ActionType.ViewedError, string>
+export const updateViewedError = (payload: string): ActionViewedError => ({
+    type: ActionType.ViewedError,
     payload,
 })

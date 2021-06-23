@@ -6,20 +6,22 @@ import { Strings } from '../strings/strings'
 import { saveFile } from '../thunks/saveFile'
 
 export interface SaveFileButtonProps {
-    fileName: string;
-    itemsWithNotesOnly?: boolean;
+    fileName: string
+    itemsWithNotesOnly?: boolean
 }
 
-export function SaveFileButton({ fileName, itemsWithNotesOnly }
-: SaveFileButtonProps) {
+export function SaveFileButton({
+    fileName,
+    itemsWithNotesOnly,
+}: SaveFileButtonProps): JSX.Element {
     const { dispatch, getState } = React.useContext(StoreContext)
-    const { saveFileStatus, saveExternalUri } = getState()
+    const { saveFileStatus } = getState()
 
     const onPress = () => dispatch(saveFile(fileName, itemsWithNotesOnly))
 
     let disabled = false,
         title = Strings.ButtonSave,
-        type = 'outline' as ('outline' | 'solid')
+        type = 'outline' as 'outline' | 'solid'
     switch (saveFileStatus) {
         case LoadingStatus.Unstarted:
             type = 'solid'

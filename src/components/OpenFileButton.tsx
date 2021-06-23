@@ -5,10 +5,15 @@ import { dbi } from '../database/dbInstance'
 import { StoreContext } from '../redux/store'
 import { Strings } from '../strings/strings'
 import { FileInfo, openFile } from '../thunks/openFile'
+import { Navigation } from './propTypes'
 
-export interface OpenFileButtonProps { navigation?: any; }
+export interface OpenFileButtonProps {
+    navigation?: Navigation
+}
 
-export function OpenFileButton({ navigation }: OpenFileButtonProps) {
+export function OpenFileButton({
+    navigation,
+}: OpenFileButtonProps): JSX.Element {
     const { dispatch } = React.useContext(StoreContext)
 
     const showError = (message: string) => {
@@ -18,16 +23,15 @@ export function OpenFileButton({ navigation }: OpenFileButtonProps) {
         ToastAndroid.show(message, ToastAndroid.SHORT)
     }
     const success = (fileInfo: FileInfo) => {
-        const { loadTime, rows } = fileInfo
-        const document = fileInfo.document as any // make ts compiler happy
-        Alert.alert(
-            Strings.LoadFileDone,
-            Strings.LoadFileInfo
-                .replace('%', '' + document.name)
+        const { document, loadTime, rows } = fileInfo
+        let message
+        if (document.type === 'success') {
+            message = Strings.LoadFileInfo.replace('%', '' + document.name)
                 .replace('%', '' + document.size)
                 .replace('%', '' + rows)
-                .replace('%', '' + (loadTime / 1000))
-        )
+                .replace('%', '' + loadTime / 1000)
+        }
+        Alert.alert(Strings.LoadFileDone, message)
         if (navigation) {
             navigation.navigate(Strings.ScreenNameView)
         }
@@ -37,14 +41,17 @@ export function OpenFileButton({ navigation }: OpenFileButtonProps) {
     let onPress
     if (dbi.isInit()) {
         onPress = () => {
-            Alert.alert(Strings.Warning, Strings.OpenFileWarn, [{
-                text: Strings.ButtonCancel,
-                style: 'cancel',
-            }, {
-                text: Strings.ButtonContinue,
-                style: 'destructive',
-                onPress: fileOpen,
-            }])
+            Alert.alert(Strings.Warning, Strings.OpenFileWarn, [
+                {
+                    text: Strings.ButtonCancel,
+                    style: 'cancel',
+                },
+                {
+                    text: Strings.ButtonContinue,
+                    style: 'destructive',
+                    onPress: fileOpen,
+                },
+            ])
         }
     } else {
         onPress = fileOpen

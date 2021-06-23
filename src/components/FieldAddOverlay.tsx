@@ -1,7 +1,7 @@
 import React from 'react'
 import { ButtonGroup, Input } from 'react-native-elements'
 import { ColumnType } from '../database/types'
-import { updateFieldEditStatus } from '../redux/actions'
+import { updateFieldEdit } from '../redux/actions'
 import { StoreContext } from '../redux/store'
 import { columnTypeEnums, columnTypeStrings } from '../strings/columntype'
 import { Strings } from '../strings/strings'
@@ -10,7 +10,7 @@ import { addNoteField } from '../thunks/addNoteField'
 import { OverlayTemplate } from './OverlayTemplate'
 import { P } from './textComponents'
 
-export function FieldAddOverlay() {
+export function FieldAddOverlay(): JSX.Element {
     const { dispatch } = React.useContext(StoreContext)
     const [title, setTitle] = React.useState('')
     const [type, setType] = React.useState(ColumnType.Text)
@@ -20,7 +20,7 @@ export function FieldAddOverlay() {
         setTypeIndex(index)
         setType(columnTypeEnums[index])
     }
-    const onCancel = () => dispatch(updateFieldEditStatus(false))
+    const onCancel = () => dispatch(updateFieldEdit(false))
     const onSave = () => dispatch(addNoteField({ title, type }))
 
     return (
@@ -30,13 +30,13 @@ export function FieldAddOverlay() {
                 value={title}
                 onChangeText={setTitle}
                 style={styles.textInput}
-                />
+            />
             <P>{Strings.FieldType}</P>
             <ButtonGroup
                 onPress={chooseType}
                 selectedIndex={typeIndex}
                 buttons={columnTypeStrings}
-                />
+            />
         </OverlayTemplate>
     )
 }

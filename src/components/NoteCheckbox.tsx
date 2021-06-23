@@ -4,9 +4,12 @@ import { StoreContext } from '../redux/store'
 import { saveNoteInput } from '../thunks/saveNoteInput'
 import { setNoteInput } from '../thunks/setNoteInput'
 
-export interface NoteCheckboxProps { index: number; title: string; }
+export interface NoteCheckboxProps {
+    index: number
+    title: string
+}
 
-export function NoteCheckbox({ index, title }: NoteCheckboxProps) {
+export function NoteCheckbox({ index, title }: NoteCheckboxProps): JSX.Element {
     const { dispatch, getState } = React.useContext(StoreContext)
     const { noteInput } = getState()
     const onPress = () => {
@@ -18,6 +21,7 @@ export function NoteCheckbox({ index, title }: NoteCheckboxProps) {
         <CheckBox
             title={title}
             checked={!!noteInput[index]}
-            onPress={onPress} />
+            onPress={onPress}
+        />
     )
 }

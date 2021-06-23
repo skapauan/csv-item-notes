@@ -4,43 +4,40 @@ import { Text, View } from 'react-native'
 import { styles } from '../styles/styles'
 
 interface TextProps {
-    children: any;
-    centered?: boolean;
+    children: React.ReactNode
+    centered?: boolean
 }
 
-function getStyle(base: StyleProp<TextStyle>, props: TextProps)
-: StyleProp<TextStyle>[] {
+function getStyle(
+    base: StyleProp<TextStyle>,
+    props: TextProps,
+): StyleProp<TextStyle>[] {
     const style = [base]
     if (props.centered) style.push(styles.centered)
     return style
 }
 
-export function P(props: TextProps) {
+export function P(props: TextProps): JSX.Element {
     const style = getStyle(styles.p, props)
-    return (
-        <Text style={style}>{props.children}</Text>
-    )
+    return <Text style={style}>{props.children}</Text>
 }
 
-export function DT(props: TextProps) {
+export function DT(props: TextProps): JSX.Element {
     const style = getStyle(styles.dt, props)
-    return (
-        <Text style={style}>{props.children}</Text>
-    )
+    return <Text style={style}>{props.children}</Text>
 }
 
-export function DD(props: TextProps) {
+export function DD(props: TextProps): JSX.Element {
     const style = getStyle(styles.dd, props)
-    return (
-        <Text style={style}>{props.children}</Text>
-    )
+    return <Text style={style}>{props.children}</Text>
 }
 
-export function LI(props: TextProps) {
+export function LI(props: TextProps): JSX.Element {
     if (props.centered) {
         return (
             <Text style={[styles.p, styles.centered]}>
-                {'\u2022  '}{props.children}
+                {'\u2022  '}
+                {props.children}
             </Text>
         )
     }

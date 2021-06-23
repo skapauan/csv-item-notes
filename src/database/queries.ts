@@ -2,16 +2,17 @@ import { DBConstants } from './constants'
 import { ColumnType, DBQuery, DBValue, EditNoteInput } from './types'
 
 export const DBQueries = {
-
-    getAlterItemsAddColumn: (columnName: string, columnType: ColumnType) =>
+    getAlterItemsAddColumn: (
+        columnName: string,
+        columnType: ColumnType,
+    ): DBQuery =>
         `ALTER TABLE ${DBConstants.Items.Table}
         ADD COLUMN ${columnName} ${columnType};`,
-    
-    getCreateItems: (columnDeclarations: string[], isCopy: boolean = false)
-    : string => {
+
+    getCreateItems: (columnDeclarations: string[], isCopy = false): DBQuery => {
         const cols = [
             `${DBConstants.Items.Id} INTEGER PRIMARY KEY NOT NULL`,
-            ...columnDeclarations
+            ...columnDeclarations,
         ]
         const table = isCopy
             ? DBConstants.Items.TableCopy
@@ -24,7 +25,7 @@ export const DBQueries = {
             WHERE ${DBConstants.ItemCols.Id} = ?;`,
         values: [id],
     }),
-    
+
     getInsertItem: (columnNames: string[]): string => {
         const placeholders: string[] = []
         columnNames.forEach(() => placeholders.push('?'))
@@ -40,32 +41,40 @@ export const DBQueries = {
         FROM ${DBConstants.Items.Table};`
     },
 
-    getSelectAllItems: (selectColumnNames?: string[],
-    notNullColNames?: string[]) : DBQuery => {
+    getSelectAllItems: (
+        selectColumnNames?: string[],
+        notNullColNames?: string[],
+    ): DBQuery => {
         let cols = '*'
         if (selectColumnNames && selectColumnNames.length > 0) {
             cols = selectColumnNames.join(',')
         }
         if (notNullColNames) {
-            const conditions = notNullColNames.length > 0
-                ? notNullColNames.map(name => `${name} IS NOT NULL`).join(' OR ')
-                : '0=1'
+            const conditions =
+                notNullColNames.length > 0
+                    ? notNullColNames
+                          .map((name) => `${name} IS NOT NULL`)
+                          .join(' OR ')
+                    : '0=1'
             return `SELECT ${cols} FROM ${DBConstants.Items.Table}
             WHERE ${conditions};`
         }
         return `SELECT ${cols} FROM ${DBConstants.Items.Table};`
     },
 
-    getSelectTableWithName: (tableName: string) =>
+    getSelectTableWithName: (tableName: string): DBQuery =>
         `SELECT name FROM sqlite_master WHERE type='table'
         AND name='${tableName.replace(/'/g, "''")}';`,
 
-    getSelectTableIsEmpty: (tableName: string) =>
+    getSelectTableIsEmpty: (tableName: string): DBQuery =>
         `SELECT CASE WHEN EXISTS (SELECT 1 FROM
         "${tableName.replace(/"/g, '""')}") THEN 0 ELSE 1 END AS isempty;`,
 
-    getSelectItemsWithColumnValue: (columnName: string,
-    selectColumnNames?: string[], limitOne?: boolean): string => {
+    getSelectItemsWithColumnValue: (
+        columnName: string,
+        selectColumnNames?: string[],
+        limitOne?: boolean,
+    ): string => {
         let cols = '*'
         if (selectColumnNames && selectColumnNames.length > 0) {
             cols = selectColumnNames.join(',')
@@ -75,8 +84,11 @@ export const DBQueries = {
         ${limitOne ? 'LIMIT 1' : ''};`
     },
 
-    getUpdateItemCol: ({ id, title, order }: EditNoteInput)
-    : DBQuery | undefined => {
+    getUpdateItemCol: ({
+        id,
+        title,
+        order,
+    }: EditNoteInput): DBQuery | undefined => {
         const sets: string[] = []
         const values: DBValue[] = []
         if (typeof title === 'string') {
@@ -106,40 +118,32 @@ export const DBQueries = {
         WHERE "${DBConstants.Items.Id}" = ?`
     },
 
-    AlterRenameItemsCopy:
-        `ALTER TABLE ${DBConstants.Items.TableCopy}
+    AlterRenameItemsCopy: `ALTER TABLE ${DBConstants.Items.TableCopy}
         RENAME TO ${DBConstants.Items.Table};`,
 
-    CreateItemCols:
-        `CREATE TABLE IF NOT EXISTS "${DBConstants.ItemCols.Table}" (
+    CreateItemCols: `CREATE TABLE IF NOT EXISTS "${DBConstants.ItemCols.Table}" (
         ${DBConstants.ItemCols.Id} INTEGER PRIMARY KEY NOT NULL,
         ${DBConstants.ItemCols.Name} TEXT,
         ${DBConstants.ItemCols.Title} TEXT,
         ${DBConstants.ItemCols.IsNote} BOOLEAN,
         ${DBConstants.ItemCols.Order} INTEGER);`,
 
-    DropItems:
-        `DROP TABLE IF EXISTS "${DBConstants.Items.Table}";`,
+    DropItems: `DROP TABLE IF EXISTS "${DBConstants.Items.Table}";`,
 
-    DropItemCols:
-        `DROP TABLE IF EXISTS "${DBConstants.ItemCols.Table}";`,
+    DropItemCols: `DROP TABLE IF EXISTS "${DBConstants.ItemCols.Table}";`,
 
-    InsertItemCol:
-        `INSERT INTO "${DBConstants.ItemCols.Table}"
+    InsertItemCol: `INSERT INTO "${DBConstants.ItemCols.Table}"
         (${DBConstants.ItemCols.Name}, ${DBConstants.ItemCols.Title},
         ${DBConstants.ItemCols.IsNote}, ${DBConstants.ItemCols.Order})
         VALUES (?, ?, ?, ?);`,
 
-    PragmaTableInfoItems:
-        `PRAGMA table_info("${DBConstants.Items.Table}");`,
+    PragmaTableInfoItems: `PRAGMA table_info("${DBConstants.Items.Table}");`,
 
-    SelectAllItemCols:
-        `SELECT ${DBConstants.ItemCols.Id}, ${DBConstants.ItemCols.Name},
+    SelectAllItemCols: `SELECT ${DBConstants.ItemCols.Id}, ${DBConstants.ItemCols.Name},
         ${DBConstants.ItemCols.Title}, ${DBConstants.ItemCols.IsNote},
         ${DBConstants.ItemCols.Order} FROM "${DBConstants.ItemCols.Table}";`,
 
     SelectCountItemCols: 'SELECT COUNT(1) AS count FROM item_cols;',
 
     SelectCountItems: 'SELECT COUNT(1) AS count FROM items;',
-
 }

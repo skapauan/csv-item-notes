@@ -1,10 +1,10 @@
 import { dbi } from '../database/dbInstance'
 import { ItemOutput } from '../database/types'
 import { updateViewedItem, updateViewedError } from '../redux/actions'
-import { Dispatch, GetState } from '../redux/store'
+import { Dispatch, GetState, Thunk } from '../redux/store'
 import { Strings } from '../strings/strings'
 
-export function findItemById(firstValue?: string) {
+export function findItemById(firstValue?: string): Thunk {
     return async (dispatch: Dispatch, getState: GetState) => {
         let item: ItemOutput | undefined
         if (typeof firstValue !== 'string') {

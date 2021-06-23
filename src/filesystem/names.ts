@@ -5,12 +5,12 @@ export function getInternalUri(fileName: string): string {
     return FSConstants.CacheFolder + fileName + FSConstants.CsvExtension
 }
 
-export function sanitizeFileName(fileName: string,
-allowEmptyString: boolean = false): string {
+export function sanitizeFileName(
+    fileName: string,
+    allowEmptyString = false,
+): string {
     const fallback = allowEmptyString ? '' : FSConstants.FileNameDefault
-    return (
-        typeof fileName === 'string'
+    return typeof fileName === 'string'
         ? sanitize(fileName.trim()) || fallback
         : fallback
-    )
 }

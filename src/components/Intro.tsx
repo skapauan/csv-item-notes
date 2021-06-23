@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { ScrollView } from 'react-native'
 import { Strings } from '../strings/strings'
@@ -7,14 +6,15 @@ import { FileRequirements } from './FileRequirements'
 import { OpenFileButton } from './OpenFileButton'
 import { P } from './textComponents'
 
-export function Intro() {
+export function Intro(): JSX.Element {
     return (
-        <ScrollView style={styles.bodyScrollOuterSolo}
-                contentContainerStyle={styles.bodyScrollInner}>
+        <ScrollView
+            style={styles.bodyScrollOuterSolo}
+            contentContainerStyle={styles.bodyScrollInner}
+        >
             <P>{Strings.IntroInstructions}</P>
             <FileRequirements />
             <OpenFileButton />
         </ScrollView>
     )
 }
-

@@ -1,16 +1,16 @@
 import { dbi } from '../database/dbInstance'
 import { updateDataStatus } from '../redux/actions'
 import { LoadingStatus } from '../redux/loadingStatus'
-import { Dispatch, GetState } from '../redux/store'
+import { Dispatch, Thunk } from '../redux/store'
 import { getNoteFields } from './getNoteFields'
 
-export function checkDataStatus() {
-    return (dispatch: Dispatch, getState: GetState) => {
+export function checkDataStatus(): Thunk {
+    return (dispatch: Dispatch) => {
         dbi.init()
-        .then(() => {
-            dispatch(getNoteFields())
-            dispatch(updateDataStatus(LoadingStatus.Done))
-        })
-        .catch((e) => dispatch(updateDataStatus(LoadingStatus.Unstarted)))
+            .then(() => {
+                dispatch(getNoteFields())
+                dispatch(updateDataStatus(LoadingStatus.Done))
+            })
+            .catch(() => dispatch(updateDataStatus(LoadingStatus.Unstarted)))
     }
 }

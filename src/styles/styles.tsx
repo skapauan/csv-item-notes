@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     topSearchButton: {
         height: 50,
         width: 50,
-        padding: 10
+        padding: 10,
     },
     topTitle: {
         paddingVertical: 10,

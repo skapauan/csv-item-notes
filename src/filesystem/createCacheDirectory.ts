@@ -1,7 +1,9 @@
 import * as FileSystem from 'expo-file-system'
 import { FSConstants } from './constants'
 
-export async function createCacheDirectory(dirInfo?: FileSystem.FileInfo) {
+export async function createCacheDirectory(
+    dirInfo?: FileSystem.FileInfo,
+): Promise<void> {
     const cacheFolder = FSConstants.CacheFolder
 
     // Check if directory exists
@@ -13,7 +15,8 @@ export async function createCacheDirectory(dirInfo?: FileSystem.FileInfo) {
         await FileSystem.deleteAsync(cacheFolder, { idempotent: true })
     }
     if (!exists || !isDirectory) {
-        await FileSystem.makeDirectoryAsync(cacheFolder, { intermediates: true })
+        await FileSystem.makeDirectoryAsync(cacheFolder, {
+            intermediates: true,
+        })
     }
-
 }
