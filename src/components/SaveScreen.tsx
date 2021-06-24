@@ -4,11 +4,7 @@ import { CheckBox, Input } from 'react-native-elements'
 import { useNavigationState } from '@react-navigation/native'
 import { FSConstants } from '../filesystem/constants'
 import { sanitizeFileName } from '../filesystem/names'
-import {
-    updateSaveExternalUri,
-    updateSaveFileStatus,
-    updateSaveInternalUri,
-} from '../redux/actions'
+import { updateSaveFileStatus } from '../redux/actions'
 import { LoadingStatus } from '../redux/loadingStatus'
 import { StoreContext } from '../redux/store'
 import { Strings } from '../strings/strings'
@@ -25,17 +21,16 @@ export function SaveScreen(): JSX.Element {
     const [fileName, setFileName] = React.useState(FSConstants.FileNameDefault)
     const [withNotes, setWithNotes] = React.useState(false)
 
-    // Forget any saved file when user navigates away from this screen
+    // Hide previously saved file when user navigates away from this screen
     const currentIndex = useNavigationState((state) => state.index)
     const saveScreenIndex = useNavigationState(
         (state) => state.routeNames,
     ).indexOf(Strings.ScreenNameSave)
     React.useEffect(() => {
         dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
-        dispatch(updateSaveExternalUri(''))
-        dispatch(updateSaveInternalUri(''))
     }, [currentIndex === saveScreenIndex])
 
+    // Hide previously saved file when user changes save inputs
     const cleanFileName = () => {
         setFileName(sanitizeFileName(fileName, true))
         dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))

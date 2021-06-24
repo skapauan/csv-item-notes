@@ -54,8 +54,6 @@ export function saveFile(fileName: string, itemsWithNotesOnly = false): Thunk {
         } catch (e) {
             Alert.alert(Strings.Error, Strings.ErrorFileSystem + e.message)
             dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
-            dispatch(updateSaveInternalUri(''))
-            dispatch(updateSaveExternalUri(''))
             return
         }
         dispatch(updateSaveInternalUri(internalUri))

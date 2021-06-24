@@ -55,13 +55,22 @@ export const StoreProvider = (props: StoreProviderProps): JSX.Element => {
                 case ActionType.OpenFileProgress:
                     return { ...state, openFileProgress: action.payload }
                 case ActionType.SaveFileStatus:
-                    return { ...state, saveFileStatus: action.payload }
+                    const saveFileStatus = action.payload
+                    if (saveFileStatus === LoadingStatus.Unstarted) {
+                        return {
+                            ...state,
+                            saveFileStatus,
+                            saveExternalUri: '',
+                            saveInternalUri: '',
+                        }
+                    }
+                    return { ...state, saveFileStatus }
                 case ActionType.SaveExternalUri:
                     return { ...state, saveExternalUri: action.payload }
                 case ActionType.SaveInternalUri:
                     return { ...state, saveInternalUri: action.payload }
                 case ActionType.ViewedItem:
-                    const viewedItem = action.payload as ItemOutput
+                    const viewedItem = action.payload
                     if (viewedItem) {
                         const { noteFields } = state
                         const noteInput = noteFields.map(({ index, type }) =>
