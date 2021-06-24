@@ -337,13 +337,13 @@ export class DB {
             })
         }
         // Construct queries to create and populate Items table
-        const colDecs: string[] = []
         const colNames: string[] = []
+        const colTypes: ColumnType[] = []
         columns.forEach((col) => {
-            colDecs.push(`${col.name} ${col.type}`)
             colNames.push(col.name)
+            colTypes.push(col.type)
         })
-        queries.push(DBQueries.getCreateItems(colDecs))
+        queries.push(DBQueries.getCreateItems(colNames, colTypes))
         const insertItem = DBQueries.getInsertItem(colNames)
         for (let i = hasHeaderRow ? 1 : 0; i < numRows; i++) {
             const row = rows[i],
@@ -476,14 +476,14 @@ export class DB {
             }
             return true
         })
-        const colDecs: string[] = []
         const colNames: string[] = []
+        const colTypes: ColumnType[] = []
         remainingCols.forEach((col) => {
-            colDecs.push(`${col.name} ${col.type}`)
             colNames.push(col.name)
+            colTypes.push(col.type)
         })
         const queries: DBQuery[] = []
-        queries.push(DBQueries.getCreateItems(colDecs, true))
+        queries.push(DBQueries.getCreateItems(colNames, colTypes, true))
         queries.push(DBQueries.getInsertItemsCopy(colNames))
         queries.push(DBQueries.DropItems)
         queries.push(DBQueries.AlterRenameItemsCopy)
