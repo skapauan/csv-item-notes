@@ -1,12 +1,10 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
 import { dbi } from '../database/dbInstance'
 import { StoreContext } from '../redux/store'
 import { Strings } from '../strings/strings'
-import { styles } from '../styles/styles'
 import { NotesSheet } from './NotesSheet'
+import { ScreenTemplate } from './ScreenTemplate'
 import { DD, DT, P } from './textComponents'
-import { TopBar } from './TopBar'
 
 export function ViewScreen(): JSX.Element {
     const { getState } = React.useContext(StoreContext)
@@ -29,16 +27,15 @@ export function ViewScreen(): JSX.Element {
         content = <P>{Strings.ViewScreenInstructions}</P>
     }
 
+    const notes = haveNotes ? <NotesSheet /> : undefined
+
     return (
-        <View style={styles.outerView}>
-            <TopBar showSearch={true} />
-            <ScrollView
-                style={styles.bodyScrollOuter}
-                contentContainerStyle={styles.bodyScrollInner}
-            >
-                {content}
-            </ScrollView>
-            {haveNotes && <NotesSheet />}
-        </View>
+        <ScreenTemplate
+            after={notes}
+            showSearch={true}
+            title={Strings.ScreenNameView}
+        >
+            {content}
+        </ScreenTemplate>
     )
 }

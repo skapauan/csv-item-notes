@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
+import { View } from 'react-native'
 import { CheckBox, Input } from 'react-native-elements'
 import { useNavigationState } from '@react-navigation/native'
 import { FSConstants } from '../filesystem/constants'
@@ -12,8 +12,8 @@ import { styles } from '../styles/styles'
 import { FileShareButton } from './FileShareButton'
 import { FileViewButton } from './FileViewButton'
 import { SaveFileButton } from './SaveFileButton'
+import { ScreenTemplate } from './ScreenTemplate'
 import { P } from './textComponents'
-import { TopBar } from './TopBar'
 
 export function SaveScreen(): JSX.Element {
     const { dispatch, getState } = React.useContext(StoreContext)
@@ -42,69 +42,63 @@ export function SaveScreen(): JSX.Element {
     }
 
     return (
-        <View style={styles.outerView}>
-            <TopBar title={Strings.ScreenNameSave} />
-            <ScrollView
-                style={styles.bodyScrollOuter}
-                contentContainerStyle={styles.bodyScrollInner}
-            >
-                <P>{Strings.SaveInclude}</P>
-                <CheckBox
-                    title={Strings.SaveItemsAll}
-                    checked={!withNotes}
-                    onPress={() => updateWithNotes(false)}
-                    checkedIcon="dot-circle-o"
-                    uncheckedIcon="circle-o"
-                />
-                <CheckBox
-                    title={Strings.SaveItemsHavingNotes}
-                    checked={withNotes}
-                    onPress={() => updateWithNotes(true)}
-                    checkedIcon="dot-circle-o"
-                    uncheckedIcon="circle-o"
-                />
+        <ScreenTemplate title={Strings.ScreenNameSave}>
+            <P>{Strings.SaveInclude}</P>
+            <CheckBox
+                title={Strings.SaveItemsAll}
+                checked={!withNotes}
+                onPress={() => updateWithNotes(false)}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+            />
+            <CheckBox
+                title={Strings.SaveItemsHavingNotes}
+                checked={withNotes}
+                onPress={() => updateWithNotes(true)}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+            />
 
-                <P>{Strings.SaveFileName}</P>
-                <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
-                    <View style={{ flex: 1 }}>
-                        <Input
-                            value={fileName}
-                            onChangeText={setFileName}
-                            onBlur={cleanFileName}
-                            onSubmitEditing={cleanFileName}
-                            placeholder={FSConstants.FileNameDefault}
-                        />
-                    </View>
-                    <View>
-                        <P>.csv</P>
-                    </View>
-                </View>
-
-                <View style={{ marginBottom: 15 }}>
-                    <SaveFileButton
-                        fileName={fileName}
-                        itemsWithNotesOnly={withNotes}
+            <P>{Strings.SaveFileName}</P>
+            <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+                <View style={{ flex: 1 }}>
+                    <Input
+                        value={fileName}
+                        onChangeText={setFileName}
+                        onBlur={cleanFileName}
+                        onSubmitEditing={cleanFileName}
+                        placeholder={FSConstants.FileNameDefault}
                     />
                 </View>
+                <View>
+                    <P>.csv</P>
+                </View>
+            </View>
 
-                {saveFileStatus === LoadingStatus.Done && (
-                    <View style={styles.highlightSection}>
-                        <P centered>
-                            {saveExternalUri
-                                ? Strings.SavedToDevice
-                                : Strings.SavedTemporary}
-                        </P>
-                        <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <View style={{ flex: 1, marginRight: 10 }}>
-                                <FileViewButton />
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <FileShareButton />
-                            </View>
+            <View style={{ marginBottom: 15 }}>
+                <SaveFileButton
+                    fileName={fileName}
+                    itemsWithNotesOnly={withNotes}
+                />
+            </View>
+
+            {saveFileStatus === LoadingStatus.Done && (
+                <View style={styles.highlightSection}>
+                    <P centered>
+                        {saveExternalUri
+                            ? Strings.SavedToDevice
+                            : Strings.SavedTemporary}
+                    </P>
+                    <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                        <View style={{ flex: 1, marginRight: 10 }}>
+                            <FileViewButton />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <FileShareButton />
                         </View>
                     </View>
-                )}
-            </ScrollView>
-        </View>
+                </View>
+            )}
+        </ScreenTemplate>
     )
 }

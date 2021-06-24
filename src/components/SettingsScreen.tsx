@@ -1,13 +1,11 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
 import { dbi } from '../database/dbInstance'
 import { DBQueries } from '../database/queries'
 import { ItemColumn } from '../database/types'
 import { StoreContext } from '../redux/store'
 import { Strings } from '../strings/strings'
-import { styles } from '../styles/styles'
+import { ScreenTemplate } from './ScreenTemplate'
 import { LI, P } from './textComponents'
-import { TopBar } from './TopBar'
 
 export function SettingsScreen(): JSX.Element {
     const [itemsRows, setItemsRows] = React.useState(0)
@@ -33,20 +31,14 @@ export function SettingsScreen(): JSX.Element {
     })
     const names = dbi.savedQueries.noteColumnNames.join(', ')
     return (
-        <View style={styles.outerView}>
-            <TopBar title={Strings.ScreenNameSettings} />
-            <ScrollView
-                style={styles.bodyScrollOuter}
-                contentContainerStyle={styles.bodyScrollInner}
-            >
-                <P>{Strings.DiagnosticInfo}</P>
-                <P>items rows: {itemsRows}</P>
-                <P>item_cols rows: {itemColsRows}</P>
-                <P>note fields:</P>
-                {fields}
-                <P>noteColumnNames:</P>
-                <P>{names}</P>
-            </ScrollView>
-        </View>
+        <ScreenTemplate title={Strings.ScreenNameSettings}>
+            <P>{Strings.DiagnosticInfo}</P>
+            <P>items rows: {itemsRows}</P>
+            <P>item_cols rows: {itemColsRows}</P>
+            <P>note fields:</P>
+            {fields}
+            <P>noteColumnNames:</P>
+            <P>{names}</P>
+        </ScreenTemplate>
     )
 }
