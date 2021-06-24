@@ -18,7 +18,7 @@ import { TopBar } from './TopBar'
 export function SaveScreen(): JSX.Element {
     const { dispatch, getState } = React.useContext(StoreContext)
     const { saveFileStatus, saveExternalUri } = getState()
-    const [fileName, setFileName] = React.useState(FSConstants.FileNameDefault)
+    const [fileName, setFileName] = React.useState('')
     const [withNotes, setWithNotes] = React.useState(false)
 
     // Hide previously saved file when user navigates away from this screen
@@ -37,7 +37,7 @@ export function SaveScreen(): JSX.Element {
     }
     const updateWithNotes = (value: boolean) => {
         if (value === withNotes) return
-        setWithNotes(!withNotes)
+        setWithNotes(value)
         dispatch(updateSaveFileStatus(LoadingStatus.Unstarted))
     }
 
