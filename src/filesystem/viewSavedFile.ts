@@ -1,6 +1,6 @@
+import { Alert, Platform } from 'react-native'
 import * as FileSystem from 'expo-file-system'
 import * as IntentLauncher from 'expo-intent-launcher'
-import { Alert, Platform } from 'react-native'
 import { Strings } from '../strings/strings'
 import { FSConstants } from './constants'
 

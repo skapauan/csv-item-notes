@@ -1,5 +1,5 @@
-import LocalizedStrings from 'localized-strings'
 import * as Localization from 'expo-localization'
+import LocalizedStrings from 'localized-strings'
 
 export const Strings = new LocalizedStrings({
     en: {

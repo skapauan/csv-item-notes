@@ -1,7 +1,7 @@
-import * as Sharing from 'expo-sharing'
 import { Alert } from 'react-native'
-import { FSConstants } from './constants'
+import * as Sharing from 'expo-sharing'
 import { Strings } from '../strings/strings'
+import { FSConstants } from './constants'
 
 export async function shareSavedFile(fileUri: string): Promise<void> {
     if (!fileUri) {

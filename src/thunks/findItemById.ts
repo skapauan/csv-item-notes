@@ -1,6 +1,6 @@
 import { dbi } from '../database/dbInstance'
 import { ItemOutput } from '../database/types'
-import { updateViewedItem, updateViewedError } from '../redux/actions'
+import { updateViewedError, updateViewedItem } from '../redux/actions'
 import { Dispatch, GetState, Thunk } from '../redux/store'
 import { Strings } from '../strings/strings'
 

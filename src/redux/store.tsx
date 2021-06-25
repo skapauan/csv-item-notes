@@ -5,8 +5,8 @@ import useThunkReducer, {
     Thunk as PackageThunk,
 } from 'react-hook-thunk-reducer'
 import { ItemColumn, ItemOutput } from '../database/types'
-import { ActionType, Action } from './actions'
 import { FormValue, getFormValue } from '../forms/forms'
+import { Action, ActionType } from './actions'
 import { LoadingStatus } from './loadingStatus'
 
 export interface StoreProviderProps {
