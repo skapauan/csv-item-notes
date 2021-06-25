@@ -1,8 +1,8 @@
 import React from 'react'
 import { Input } from 'react-native-elements'
-import { StoreContext } from '../redux/store'
-import { saveNoteInput } from '../thunks/saveNoteInput'
-import { setNoteInput } from '../thunks/setNoteInput'
+import { StoreContext } from '../../redux/store'
+import { saveNoteInput } from '../../thunks/saveNoteInput'
+import { setNoteInput } from '../../thunks/setNoteInput'
 
 export interface NoteTextInputProps {
     index: number

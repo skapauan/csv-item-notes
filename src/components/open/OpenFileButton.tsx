@@ -1,11 +1,11 @@
 import React from 'react'
 import { Alert, ToastAndroid } from 'react-native'
 import { Button } from 'react-native-elements'
-import { dbi } from '../database/dbInstance'
-import { StoreContext } from '../redux/store'
-import { Strings } from '../strings/strings'
-import { FileInfo, openFile } from '../thunks/openFile'
-import { Navigation } from './propTypes'
+import { dbi } from '../../database/dbInstance'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
+import { FileInfo, openFile } from '../../thunks/openFile'
+import { Navigation } from '../screen/propTypes'
 
 export interface OpenFileButtonProps {
     navigation?: Navigation

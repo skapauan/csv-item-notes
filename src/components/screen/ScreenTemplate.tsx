@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
-import { styles } from '../styles/styles'
+import { ScrollView, View } from 'react-native'
+import { styles } from '../../styles/styles'
 import { TopBar } from './TopBar'
 
 export interface ScreenTemplateProps {

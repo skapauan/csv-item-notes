@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Keyboard, Pressable, TextInput, View } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
-import { StoreContext } from '../redux/store'
-import { Strings } from '../strings/strings'
-import { styles, topIconColor } from '../styles/styles'
-import { findItemById } from '../thunks/findItemById'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
+import { styles, topIconColor } from '../../styles/styles'
+import { findItemById } from '../../thunks/findItemById'
 
 export function TopSearch(): JSX.Element {
     const { dispatch } = React.useContext(StoreContext)

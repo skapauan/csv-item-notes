@@ -1,11 +1,11 @@
 import React from 'react'
-import { dbi } from '../database/dbInstance'
-import { DBQueries } from '../database/queries'
-import { ItemColumn } from '../database/types'
-import { StoreContext } from '../redux/store'
-import { Strings } from '../strings/strings'
-import { ScreenTemplate } from './ScreenTemplate'
-import { LI, P } from './textComponents'
+import { dbi } from '../../database/dbInstance'
+import { DBQueries } from '../../database/queries'
+import { ItemColumn } from '../../database/types'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
+import { ScreenTemplate } from '../screen/ScreenTemplate'
+import { LI, P } from '../screen/textComponents'
 
 export function SettingsScreen(): JSX.Element {
     const [itemsRows, setItemsRows] = React.useState(0)

@@ -1,12 +1,12 @@
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { Strings } from '../strings/strings'
-import { ViewScreen } from './ViewScreen'
-import { FieldsScreen } from './FieldsScreen'
-import { SaveScreen } from './SaveScreen'
-import { OpenScreen } from './OpenScreen'
-import { SettingsScreen } from './SettingsScreen'
+import { NavigationContainer } from '@react-navigation/native'
+import { Strings } from '../../strings/strings'
+import { FieldsScreen } from '../fields/FieldsScreen'
+import { OpenScreen } from '../open/OpenScreen'
+import { SaveScreen } from '../save/SaveScreen'
+import { SettingsScreen } from '../settings/SettingsScreen'
+import { ViewScreen } from '../view/ViewScreen'
 
 const Drawer = createDrawerNavigator()
 

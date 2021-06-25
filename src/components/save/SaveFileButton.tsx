@@ -1,9 +1,9 @@
 import React from 'react'
 import { Button } from 'react-native-elements'
-import { LoadingStatus } from '../redux/loadingStatus'
-import { StoreContext } from '../redux/store'
-import { Strings } from '../strings/strings'
-import { saveFile } from '../thunks/saveFile'
+import { LoadingStatus } from '../../redux/loadingStatus'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
+import { saveFile } from '../../thunks/saveFile'
 
 export interface SaveFileButtonProps {
     fileName: string

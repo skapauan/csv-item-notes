@@ -1,8 +1,8 @@
 import React from 'react'
 import { Button } from 'react-native-elements'
-import { shareSavedFile } from '../filesystem/shareSavedFile'
-import { StoreContext } from '../redux/store'
-import { Strings } from '../strings/strings'
+import { shareSavedFile } from '../../filesystem/shareSavedFile'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
 
 export function FileShareButton(): JSX.Element {
     const { getState } = React.useContext(StoreContext)

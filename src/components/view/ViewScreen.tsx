@@ -1,10 +1,10 @@
 import React from 'react'
-import { dbi } from '../database/dbInstance'
-import { StoreContext } from '../redux/store'
-import { Strings } from '../strings/strings'
+import { dbi } from '../../database/dbInstance'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
+import { ScreenTemplate } from '../screen/ScreenTemplate'
+import { DD, DT, P } from '../screen/textComponents'
 import { NotesSheet } from './NotesSheet'
-import { ScreenTemplate } from './ScreenTemplate'
-import { DD, DT, P } from './textComponents'
 
 export function ViewScreen(): JSX.Element {
     const { getState } = React.useContext(StoreContext)

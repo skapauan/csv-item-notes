@@ -1,12 +1,12 @@
 import React from 'react'
-import { View, Pressable } from 'react-native'
+import { Pressable, View } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
-import { ItemColumn } from '../database/types'
-import { updateFieldEdit } from '../redux/actions'
-import { StoreContext } from '../redux/store'
-import { getColumnTypeString } from '../strings/columntype'
-import { styles, topIconColor } from '../styles/styles'
-import { P } from './textComponents'
+import { ItemColumn } from '../../database/types'
+import { updateFieldEdit } from '../../redux/actions'
+import { StoreContext } from '../../redux/store'
+import { getColumnTypeString } from '../../strings/columntype'
+import { styles, topIconColor } from '../../styles/styles'
+import { P } from '../screen/textComponents'
 
 export type FieldItemProps = { field: ItemColumn }
 

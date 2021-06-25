@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleProp, TextStyle } from 'react-native'
 import { Text, View } from 'react-native'
-import { styles } from '../styles/styles'
+import { styles } from '../../styles/styles'
 
 interface TextProps {
     children: React.ReactNode

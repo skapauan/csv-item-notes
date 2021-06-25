@@ -1,10 +1,10 @@
 import React from 'react'
 import { ScrollView } from 'react-native'
 import { LinearProgress } from 'react-native-elements'
-import { StoreContext } from '../redux/store'
-import { Strings } from '../strings/strings'
-import { styles } from '../styles/styles'
-import { P } from './textComponents'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
+import { styles } from '../../styles/styles'
+import { P } from '../screen/textComponents'
 
 export function Loading(): JSX.Element {
     const { getState } = React.useContext(StoreContext)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Strings } from '../strings/strings'
-import { LI, P } from './textComponents'
+import { Strings } from '../../strings/strings'
+import { LI, P } from '../screen/textComponents'
 
 export function FileRequirements(): JSX.Element {
     return (

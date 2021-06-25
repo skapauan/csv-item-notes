@@ -1,10 +1,10 @@
 import React from 'react'
 import { ScrollView } from 'react-native'
-import { Strings } from '../strings/strings'
-import { styles } from '../styles/styles'
-import { FileRequirements } from './FileRequirements'
-import { OpenFileButton } from './OpenFileButton'
-import { P } from './textComponents'
+import { Strings } from '../../strings/strings'
+import { styles } from '../../styles/styles'
+import { FileRequirements } from '../open/FileRequirements'
+import { OpenFileButton } from '../open/OpenFileButton'
+import { P } from '../screen/textComponents'
 
 export function Intro(): JSX.Element {
     return (

@@ -1,14 +1,14 @@
 import React from 'react'
 import { ButtonGroup, Input } from 'react-native-elements'
-import { ColumnType } from '../database/types'
-import { updateFieldEdit } from '../redux/actions'
-import { StoreContext } from '../redux/store'
-import { columnTypeEnums, columnTypeStrings } from '../strings/columntype'
-import { Strings } from '../strings/strings'
-import { styles } from '../styles/styles'
-import { addNoteField } from '../thunks/addNoteField'
-import { OverlayTemplate } from './OverlayTemplate'
-import { P } from './textComponents'
+import { ColumnType } from '../../database/types'
+import { updateFieldEdit } from '../../redux/actions'
+import { StoreContext } from '../../redux/store'
+import { columnTypeEnums, columnTypeStrings } from '../../strings/columntype'
+import { Strings } from '../../strings/strings'
+import { styles } from '../../styles/styles'
+import { addNoteField } from '../../thunks/addNoteField'
+import { OverlayTemplate } from '../screen/OverlayTemplate'
+import { P } from '../screen/textComponents'
 
 export function FieldAddOverlay(): JSX.Element {
     const { dispatch } = React.useContext(StoreContext)

@@ -1,8 +1,8 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
-import { Overlay, Button } from 'react-native-elements'
-import { Strings } from '../strings/strings'
-import { styles } from '../styles/styles'
+import { ScrollView, View } from 'react-native'
+import { Button, Overlay } from 'react-native-elements'
+import { Strings } from '../../strings/strings'
+import { styles } from '../../styles/styles'
 
 export type OverlayTemplateProps = {
     children: React.ReactNode

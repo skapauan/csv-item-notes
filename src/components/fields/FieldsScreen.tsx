@@ -1,12 +1,12 @@
 import React from 'react'
 import { Button } from 'react-native-elements'
-import { StoreContext } from '../redux/store'
-import { updateFieldEdit } from '../redux/actions'
-import { Strings } from '../strings/strings'
+import { updateFieldEdit } from '../../redux/actions'
+import { StoreContext } from '../../redux/store'
+import { Strings } from '../../strings/strings'
+import { ScreenTemplate } from '../screen/ScreenTemplate'
 import { FieldAddOverlay } from './FieldAddOverlay'
 import { FieldEditOverlay } from './FieldEditOverlay'
 import { FieldItem } from './FieldItem'
-import { ScreenTemplate } from './ScreenTemplate'
 
 export function FieldsScreen(): JSX.Element {
     const { dispatch, getState } = React.useContext(StoreContext)
