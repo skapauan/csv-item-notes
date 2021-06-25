@@ -8,5 +8,17 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "rules": {}
+  "plugins": [
+    "simple-import-sort"
+  ],
+  "rules": {
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          ["^react", "^@react", "^@?\\w", "^\\u0000", "^", "^\\."]
+        ]
+      }
+    ]
+  }
 }
