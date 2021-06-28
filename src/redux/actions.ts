@@ -10,6 +10,7 @@ interface A<T, P> {
 // Action types
 
 export enum ActionType {
+    DataFields,
     DataStatus,
     FieldEdit,
     NoteFields,
@@ -18,11 +19,13 @@ export enum ActionType {
     SaveExternalUri,
     SaveFileStatus,
     SaveInternalUri,
+    ViewedEmptyId,
     ViewedError,
     ViewedItem,
 }
 
 export type Action =
+    | ActionDataFields
     | ActionDataStatus
     | ActionFieldEdit
     | ActionNoteFields
@@ -31,10 +34,17 @@ export type Action =
     | ActionSaveExternalUri
     | ActionSaveFileStatus
     | ActionSaveInternalUri
+    | ActionViewedEmptyId
     | ActionViewedError
     | ActionViewedItem
 
 // Action creators returning actions
+
+export type ActionDataFields = A<ActionType.DataFields, ItemColumn[]>
+export const updateDataFields = (payload: ItemColumn[]): ActionDataFields => ({
+    type: ActionType.DataFields,
+    payload,
+})
 
 export type ActionDataStatus = A<ActionType.DataStatus, LoadingStatus>
 export const updateDataStatus = (payload: LoadingStatus): ActionDataStatus => ({
@@ -94,16 +104,22 @@ export const updateSaveInternalUri = (
     payload,
 })
 
-export type ActionViewedItem = A<ActionType.ViewedItem, ItemOutput | undefined>
-export const updateViewedItem = (
-    payload: ItemOutput | undefined,
-): ActionViewedItem => ({
-    type: ActionType.ViewedItem,
+export type ActionViewedEmptyId = A<ActionType.ViewedEmptyId, string>
+export const updateViewedEmptyId = (payload: string): ActionViewedEmptyId => ({
+    type: ActionType.ViewedEmptyId,
     payload,
 })
 
 export type ActionViewedError = A<ActionType.ViewedError, string>
 export const updateViewedError = (payload: string): ActionViewedError => ({
     type: ActionType.ViewedError,
+    payload,
+})
+
+export type ActionViewedItem = A<ActionType.ViewedItem, ItemOutput | undefined>
+export const updateViewedItem = (
+    payload: ItemOutput | undefined,
+): ActionViewedItem => ({
+    type: ActionType.ViewedItem,
     payload,
 })

@@ -30,6 +30,7 @@ export class DB {
     savedQueries = {
         firstDataColumnName: '',
         allColumnNames: [] as string[],
+        dataColumnNames: [] as string[],
         noteColumnNames: [] as string[],
         selectItemByFirstValue: '',
     }
@@ -53,6 +54,9 @@ export class DB {
             : DBConstants.Items.Id
         q.allColumnNames = this.itemColumns.map((col) => col.name)
         q.allColumnNames.push(DBConstants.Items.Id)
+        q.dataColumnNames = this.itemColumns
+            .filter((col) => !col.isNote)
+            .map((col) => col.name)
         q.noteColumnNames = this.itemColumns
             .filter((col) => col.isNote)
             .map((col) => col.name)
@@ -431,6 +435,28 @@ export class DB {
             },
             transaction,
         ).then((result) => getItemOutputs(result, this.itemColumns)[0])
+    }
+
+    createItems(items: DBValue[][]): Promise<void> {
+        const colNames = this.savedQueries.dataColumnNames
+        const colLength = colNames.length
+        const itemsLength = items.length
+        for (let i = 0; i < itemsLength; i++) {
+            if (items[i].length !== colLength) {
+                console.log(items[i].length + ' ' + colLength)
+                return Promise.reject(
+                    new Error(
+                        'Item data length and data column length do not match',
+                    ),
+                )
+            }
+        }
+        const insertItem = DBQueries.getInsertItem(colNames)
+        const queries: DBQuery[] = []
+        for (let i = 0; i < itemsLength; i++) {
+            queries.push({ text: insertItem, values: items[i] })
+        }
+        return this.queryMany(queries)
     }
 
     createNoteColumns(columns: CreateNoteInput[]): Promise<void> {

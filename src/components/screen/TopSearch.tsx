@@ -20,8 +20,10 @@ export function TopSearch(): JSX.Element {
         setIsFocused(false)
     }
     const onSubmitEditing = () => {
-        setLastSearched(text)
-        dispatch(findItemById(text))
+        const txt = text.trim()
+        setText(txt)
+        setLastSearched(txt)
+        dispatch(findItemById(txt))
     }
     const onPressDone = () => {
         onSubmitEditing()

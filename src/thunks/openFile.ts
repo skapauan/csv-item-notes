@@ -13,6 +13,7 @@ import { LoadingStatus } from '../redux/loadingStatus'
 import { Dispatch, GetState, Thunk } from '../redux/store'
 import { getItemDataErrorMessage } from '../strings/dberrors'
 import { Strings } from '../strings/strings'
+import { getDataFields } from './getDataFields'
 import { getNoteFields } from './getNoteFields'
 
 export type FileInfo = {
@@ -75,6 +76,7 @@ export function openFile(
             dispatch(updateOpenFileProgress(-1))
             return
         }
+        dispatch(getDataFields())
         dispatch(getNoteFields())
         // Show file info and go to main app
         const timeEnd = Date.now()

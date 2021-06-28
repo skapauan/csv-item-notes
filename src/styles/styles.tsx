@@ -129,4 +129,13 @@ export const styles = StyleSheet.create({
         paddingBottom: bodyPadBottom,
         marginVertical: bodyTextMarginVertical,
     },
+    picker: {
+        height: 50,
+    },
+    pickerWrapper: {
+        borderBottomColor: colors.grey3,
+        borderBottomWidth: 1,
+        marginHorizontal: 10,
+        marginVertical: 20,
+    },
 })

@@ -16,6 +16,7 @@ export type Thunk = PackageThunk<State, Action>
 export type Dispatch = React.Dispatch<Action | Thunk>
 export type GetState = () => State
 export interface State {
+    dataFields: ItemColumn[]
     dataStatus: LoadingStatus
     fieldEdit: ItemColumn | boolean
     noteFields: ItemColumn[]
@@ -24,10 +25,12 @@ export interface State {
     saveFileStatus: LoadingStatus
     saveExternalUri: string
     saveInternalUri: string
-    viewedItem: ItemOutput | undefined
+    viewedEmptyId: string
     viewedError: string
+    viewedItem: ItemOutput | undefined
 }
 const initialState: State = {
+    dataFields: [],
     dataStatus: LoadingStatus.Loading,
     fieldEdit: false,
     noteFields: [],
@@ -36,14 +39,17 @@ const initialState: State = {
     saveFileStatus: LoadingStatus.Unstarted,
     saveExternalUri: '',
     saveInternalUri: '',
-    viewedItem: undefined,
+    viewedEmptyId: '',
     viewedError: '',
+    viewedItem: undefined,
 }
 
 export const StoreProvider = (props: StoreProviderProps): JSX.Element => {
     const [state, dispatch] = useThunkReducer(
         (state: State, action: Action): State => {
             switch (action.type) {
+                case ActionType.DataFields:
+                    return { ...state, dataFields: action.payload }
                 case ActionType.DataStatus:
                     return { ...state, dataStatus: action.payload }
                 case ActionType.FieldEdit:
@@ -69,6 +75,10 @@ export const StoreProvider = (props: StoreProviderProps): JSX.Element => {
                     return { ...state, saveExternalUri: action.payload }
                 case ActionType.SaveInternalUri:
                     return { ...state, saveInternalUri: action.payload }
+                case ActionType.ViewedEmptyId:
+                    return { ...state, viewedEmptyId: action.payload }
+                case ActionType.ViewedError:
+                    return { ...state, viewedError: action.payload }
                 case ActionType.ViewedItem:
                     const viewedItem = action.payload
                     if (viewedItem) {
@@ -82,8 +92,6 @@ export const StoreProvider = (props: StoreProviderProps): JSX.Element => {
                         return { ...state, noteInput, viewedItem }
                     }
                     return { ...state, viewedItem }
-                case ActionType.ViewedError:
-                    return { ...state, viewedError: action.payload }
                 default:
                     return state
             }

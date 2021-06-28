@@ -4,16 +4,17 @@ import { StoreContext } from '../../redux/store'
 import { Strings } from '../../strings/strings'
 import { ScreenTemplate } from '../screen/ScreenTemplate'
 import { DD, DT, P } from '../screen/textComponents'
+import { CreateItemButton } from './CreateItemButton'
 import { NotesSheet } from './NotesSheet'
 
 export function ViewScreen(): JSX.Element {
     const { getState } = React.useContext(StoreContext)
-    const { viewedItem, viewedError } = getState()
+    const { viewedError, viewedItem } = getState()
 
     let content,
         haveNotes = false
     if (viewedError) {
-        content = <P>{viewedError}</P>
+        content = [<P key={-2}>{viewedError}</P>, <CreateItemButton key={-1} />]
     } else if (viewedItem) {
         haveNotes = true
         content = []

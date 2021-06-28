@@ -44,6 +44,10 @@ export const Strings = new LocalizedStrings({
         ErrorInvalidFieldVariance:
             'Invalid CSV: All rows must have same number of fields',
         IntroInstructions: 'To begin, choose a CSV file from your device.',
+        ItemCreate: 'Create item with %1 %2',
+        ItemCreateError: 'Failed to create item.\r\n\r\nDetails: ',
+        ItemCreateInstructions: 'Enter data for this item if desired:',
+        ItemCreateValuePlaceholder: 'Value for %',
         ItemIdPlaceholder: 'Type item ID here',
         ItemNotFound: 'Item not found',
         ItemUnexpectedError: 'Unexpected database error. Please restart app.',
