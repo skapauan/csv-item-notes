@@ -13,7 +13,10 @@ const Drawer = createDrawerNavigator()
 export function MainNavigation(): JSX.Element {
     return (
         <NavigationContainer>
-            <Drawer.Navigator initialRouteName={Strings.ScreenNameView}>
+            <Drawer.Navigator
+                initialRouteName={Strings.ScreenNameView}
+                screenOptions={{ headerShown: false }}
+            >
                 <Drawer.Screen
                     name={Strings.ScreenNameView}
                     component={ViewScreen}
